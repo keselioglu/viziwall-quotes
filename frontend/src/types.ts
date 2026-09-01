@@ -8,7 +8,8 @@ export type QuoteStatus =
   | "approved"
   | "declined"
   | "cancelled"
-  | "expired";
+  | "expired"
+  | "archived";
 
 export interface Customer {
   id: string;

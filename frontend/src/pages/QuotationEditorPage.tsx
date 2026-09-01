@@ -206,6 +206,7 @@ export default function QuotationEditorPage() {
             <option value="declined">Declined</option>
             <option value="cancelled">Cancelled</option>
             <option value="expired">Expired</option>
+            <option value="archived">Archived</option>
           </select>
         </label>
         <label>

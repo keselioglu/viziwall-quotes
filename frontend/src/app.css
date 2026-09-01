@@ -168,7 +168,16 @@ button.danger:hover {
 
 .header-actions {
   display: flex;
+  align-items: center;
   gap: 10px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #555;
 }
 
 .section-title {
@@ -251,6 +260,7 @@ button.danger:hover {
 .status-accepted { background: #dcf6e6; color: #1a8a4c; }
 .status-rejected { background: #fde3e0; color: #c0281a; }
 .status-expired { background: #f3e8d8; color: #9a6a12; }
+.status-archived { background: #ececec; color: #6b6b6b; }
 
 /* --- Modal --- */
 

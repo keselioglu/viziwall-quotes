@@ -44,8 +44,8 @@ export const deleteProduct = (id: string) => api.delete(`/products/${id}`);
 
 // --- Quotations ---
 
-export const getQuotations = () =>
-  api.get<QuotationListItem[]>("/quotations").then((r) => r.data);
+export const getQuotations = (includeArchived = false) =>
+  api.get<QuotationListItem[]>("/quotations", { params: { include_archived: includeArchived } }).then((r) => r.data);
 
 export const getQuotation = (id: string) =>
   api.get<Quotation>(`/quotations/${id}`).then((r) => r.data);
@@ -56,7 +56,10 @@ export const createQuotation = (input: QuotationInput) =>
 export const updateQuotation = (id: string, input: Partial<QuotationInput>) =>
   api.put<Quotation>(`/quotations/${id}`, input).then((r) => r.data);
 
-export const deleteQuotation = (id: string) => api.delete(`/quotations/${id}`);
+export const archiveQuotation = (id: string) => api.delete(`/quotations/${id}`);
+
+export const restoreQuotation = (id: string) =>
+  api.post<Quotation>(`/quotations/${id}/restore`).then((r) => r.data);
 
 export const getQuotationPdfUrl = (id: string) =>
   `${import.meta.env.VITE_API_URL}/quotations/${id}/pdf`;

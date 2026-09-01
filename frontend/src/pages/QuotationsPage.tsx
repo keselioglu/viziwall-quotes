@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createQuotation, deleteQuotation, getQuotation, getQuotations } from "../api/endpoints";
+import {
+  archiveQuotation, createQuotation, getQuotation, getQuotations, restoreQuotation,
+} from "../api/endpoints";
 import type { QuotationInput } from "../types";
 
 const statusColors: Record<string, string> = {
@@ -13,6 +16,7 @@ const statusColors: Record<string, string> = {
   declined: "status-rejected",
   cancelled: "status-rejected",
   expired: "status-expired",
+  archived: "status-archived",
 };
 
 const statusLabels: Record<string, string> = {
@@ -25,21 +29,29 @@ const statusLabels: Record<string, string> = {
   declined: "Declined",
   cancelled: "Cancelled",
   expired: "Expired",
+  archived: "Archived",
 };
 
 export default function QuotationsPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [showArchived, setShowArchived] = useState(false);
 
   const { data: quotations, isLoading, error } = useQuery({
-    queryKey: ["quotations"],
-    queryFn: getQuotations,
+    queryKey: ["quotations", showArchived],
+    queryFn: () => getQuotations(showArchived),
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => deleteQuotation(id),
+  const archiveMutation = useMutation({
+    mutationFn: (id: string) => archiveQuotation(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["quotations"] }),
-    onError: () => alert("Failed to delete quotation."),
+    onError: () => alert("Failed to archive quotation."),
+  });
+
+  const restoreMutation = useMutation({
+    mutationFn: (id: string) => restoreQuotation(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["quotations"] }),
+    onError: () => alert("Failed to restore quotation."),
   });
 
   const duplicateMutation = useMutation({
@@ -83,7 +95,17 @@ export default function QuotationsPage() {
     <div>
       <div className="page-header">
         <h1>Quotations</h1>
-        <Link to="/quotations/new"><button>+ New Quotation</button></Link>
+        <div className="header-actions">
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={showArchived}
+              onChange={(e) => setShowArchived(e.target.checked)}
+            />
+            Show archived
+          </label>
+          <Link to="/quotations/new"><button>+ New Quotation</button></Link>
+        </div>
       </div>
 
       {isLoading && <p>Loading...</p>}
@@ -117,14 +139,20 @@ export default function QuotationsPage() {
                   >
                     Duplicate
                   </button>
-                  <button
-                    className="danger"
-                    onClick={() => {
-                      if (confirm(`Delete quotation ${q.quote_number}?`)) deleteMutation.mutate(q.id);
-                    }}
-                  >
-                    Delete
-                  </button>
+                  {q.status === "archived" ? (
+                    <button onClick={() => restoreMutation.mutate(q.id)} disabled={restoreMutation.isPending}>
+                      Restore
+                    </button>
+                  ) : (
+                    <button
+                      className="danger"
+                      onClick={() => {
+                        if (confirm(`Archive quotation ${q.quote_number}?`)) archiveMutation.mutate(q.id);
+                      }}
+                    >
+                      Archive
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}

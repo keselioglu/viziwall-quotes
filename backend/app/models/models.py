@@ -29,6 +29,7 @@ class QuoteStatus(str, enum.Enum):
     declined = "declined"
     cancelled = "cancelled"
     expired = "expired"
+    archived = "archived"
 
 
 class User(Base):

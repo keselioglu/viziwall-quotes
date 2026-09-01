@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session, joinedload
 
 from app.auth import get_current_user
 from app.database import get_db
-from app.models import Quotation, QuoteLineItem, User
+from app.models import Quotation, QuoteLineItem, QuoteStatus, User
 from app.pdf import render_quotation_pdf
 from app.quote_numbering import generate_quote_number
 from app.schemas.schemas import QuotationCreate, QuotationListOut, QuotationOut, QuotationUpdate
@@ -17,8 +17,11 @@ def _with_relations(query):
 
 
 @router.get("", response_model=list[QuotationListOut])
-def list_quotations(db: Session = Depends(get_db)):
-    return _with_relations(db.query(Quotation)).order_by(Quotation.created_at.desc()).all()
+def list_quotations(include_archived: bool = False, db: Session = Depends(get_db)):
+    query = _with_relations(db.query(Quotation))
+    if not include_archived:
+        query = query.filter(Quotation.status != QuoteStatus.archived)
+    return query.order_by(Quotation.created_at.desc()).all()
 
 
 @router.post("", response_model=QuotationOut, status_code=201)
@@ -74,12 +77,23 @@ def update_quotation(quotation_id: str, quotation_in: QuotationUpdate, db: Sessi
 
 
 @router.delete("/{quotation_id}", status_code=204)
-def delete_quotation(quotation_id: str, db: Session = Depends(get_db)):
+def archive_quotation(quotation_id: str, db: Session = Depends(get_db)):
     quotation = db.get(Quotation, quotation_id)
     if not quotation:
         raise HTTPException(status_code=404, detail="Quotation not found")
-    db.delete(quotation)
+    quotation.status = QuoteStatus.archived
     db.commit()
+
+
+@router.post("/{quotation_id}/restore", response_model=QuotationOut)
+def restore_quotation(quotation_id: str, db: Session = Depends(get_db)):
+    quotation = db.get(Quotation, quotation_id)
+    if not quotation:
+        raise HTTPException(status_code=404, detail="Quotation not found")
+    if quotation.status == QuoteStatus.archived:
+        quotation.status = QuoteStatus.draft
+    db.commit()
+    return _with_relations(db.query(Quotation)).filter(Quotation.id == quotation_id).first()
 
 
 @router.get("/{quotation_id}/pdf")
