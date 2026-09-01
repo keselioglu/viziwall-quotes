@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+    @page { size: A4; margin: 2cm; }
+    body { font-family: 'Helvetica Neue', Arial, sans-serif; color: #1a1a1a; font-size: 10.5pt; }
+    .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #111; padding-bottom: 16px; margin-bottom: 24px; }
+    .company-name { font-size: 22pt; font-weight: 700; letter-spacing: 0.5px; }
+    .company-meta { font-size: 9pt; color: #555; margin-top: 4px; line-height: 1.5; }
+    .quote-meta { text-align: right; }
+    .quote-meta h2 { font-size: 16pt; margin: 0 0 6px 0; }
+    .quote-meta div { font-size: 9.5pt; color: #333; margin-bottom: 2px; }
+    .parties { display: flex; justify-content: space-between; margin-bottom: 28px; }
+    .party { width: 48%; }
+    .party h3 { font-size: 9pt; text-transform: uppercase; letter-spacing: 0.5px; color: #888; margin-bottom: 6px; }
+    .party p { margin: 0; line-height: 1.5; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+    th { text-align: left; font-size: 8.5pt; text-transform: uppercase; letter-spacing: 0.4px; color: #666; border-bottom: 2px solid #111; padding: 8px 6px; }
+    td { padding: 10px 6px; border-bottom: 1px solid #e5e5e5; vertical-align: top; }
+    .num { text-align: right; white-space: nowrap; }
+    .totals { width: 320px; margin-left: auto; margin-top: 16px; }
+    .totals table { margin: 0; }
+    .totals td { border: none; padding: 4px 6px; }
+    .totals .total-row td { border-top: 2px solid #111; font-weight: 700; font-size: 12pt; padding-top: 10px; }
+    .notes { margin-top: 32px; font-size: 9.5pt; color: #444; }
+    .notes h3 { font-size: 9pt; text-transform: uppercase; letter-spacing: 0.5px; color: #888; margin-bottom: 6px; }
+    .footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid #ddd; font-size: 8pt; color: #999; text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="header">
+    <div>
+        <div class="company-name">{{ company_name }}</div>
+        <div class="company-meta">
+            {% if company_address %}{{ company_address }}<br>{% endif %}
+            {% if company_email %}{{ company_email }}{% endif %}
+        </div>
+    </div>
+    <div class="quote-meta">
+        <h2>QUOTATION</h2>
+        <div><strong>{{ quotation.quote_number }}</strong></div>
+        <div>Date: {{ quotation.created_at.strftime('%d %b %Y') }}</div>
+        {% if quotation.valid_until %}<div>Valid until: {{ quotation.valid_until.strftime('%d %b %Y') }}</div>{% endif %}
+    </div>
+</div>
+
+<div class="parties">
+    <div class="party">
+        <h3>Billed To</h3>
+        <p>
+            <strong>{{ quotation.customer.company_name }}</strong><br>
+            {% if quotation.customer.contact_name %}{{ quotation.customer.contact_name }}<br>{% endif %}
+            {% if quotation.customer.address %}{{ quotation.customer.address }}<br>{% endif %}
+            {% if quotation.customer.email %}{{ quotation.customer.email }}<br>{% endif %}
+            {% if quotation.customer.phone %}{{ quotation.customer.phone }}{% endif %}
+        </p>
+    </div>
+    {% if quotation.event_name or quotation.event_venue or quotation.event_start_date %}
+    <div class="party">
+        <h3>Event</h3>
+        <p>
+            {% if quotation.event_name %}<strong>{{ quotation.event_name }}</strong><br>{% endif %}
+            {% if quotation.event_venue %}{{ quotation.event_venue }}<br>{% endif %}
+            {% if quotation.event_start_date %}
+                {{ quotation.event_start_date.strftime('%d %b %Y') }}
+                {% if quotation.event_end_date and quotation.event_end_date != quotation.event_start_date %}
+                    &ndash; {{ quotation.event_end_date.strftime('%d %b %Y') }}
+                {% endif %}
+            {% endif %}
+        </p>
+    </div>
+    {% endif %}
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th style="width: 48%;">Description</th>
+            <th class="num">Qty</th>
+            <th class="num">Days</th>
+            <th class="num">Unit Price</th>
+            <th class="num">Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in quotation.line_items %}
+        <tr>
+            <td>{{ item.description }}</td>
+            <td class="num">{{ item.quantity }}</td>
+            <td class="num">{{ item.rental_days or '—' }}</td>
+            <td class="num">{{ '%.2f'|format(item.unit_price) }} {{ quotation.currency }}</td>
+            <td class="num">{{ '%.2f'|format(item.line_total) }} {{ quotation.currency }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="totals">
+    <table>
+        <tr>
+            <td>Subtotal</td>
+            <td class="num">{{ '%.2f'|format(quotation.subtotal) }} {{ quotation.currency }}</td>
+        </tr>
+        {% if quotation.tax_rate_percent > 0 %}
+        <tr>
+            <td>Tax ({{ quotation.tax_rate_percent }}%)</td>
+            <td class="num">{{ '%.2f'|format(quotation.tax_amount) }} {{ quotation.currency }}</td>
+        </tr>
+        {% endif %}
+        <tr class="total-row">
+            <td>Total</td>
+            <td class="num">{{ '%.2f'|format(quotation.total) }} {{ quotation.currency }}</td>
+        </tr>
+    </table>
+</div>
+
+{% if quotation.notes %}
+<div class="notes">
+    <h3>Notes</h3>
+    <p>{{ quotation.notes }}</p>
+</div>
+{% endif %}
+
+<div class="footer">
+    {{ company_name }}{% if company_email %} &middot; {{ company_email }}{% endif %}
+</div>
+
+</body>
+</html>
