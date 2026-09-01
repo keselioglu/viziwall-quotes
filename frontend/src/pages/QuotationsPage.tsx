@@ -1,6 +1,7 @@
-import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getQuotations } from "../api/endpoints";
+import { Link, useNavigate } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createQuotation, deleteQuotation, getQuotation, getQuotations } from "../api/endpoints";
+import type { QuotationInput } from "../types";
 
 const statusColors: Record<string, string> = {
   draft: "status-draft",
@@ -27,9 +28,55 @@ const statusLabels: Record<string, string> = {
 };
 
 export default function QuotationsPage() {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
   const { data: quotations, isLoading, error } = useQuery({
     queryKey: ["quotations"],
     queryFn: getQuotations,
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteQuotation(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["quotations"] }),
+    onError: () => alert("Failed to delete quotation."),
+  });
+
+  const duplicateMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const source = await getQuotation(id);
+      const input: QuotationInput = {
+        customer_id: source.customer_id,
+        event_name: source.event_name,
+        event_venue: source.event_venue,
+        event_start_date: source.event_start_date,
+        event_end_date: source.event_end_date,
+        event_dates_text: source.event_dates_text,
+        status: "draft",
+        currency: source.currency,
+        tax_rate_percent: Number(source.tax_rate_percent),
+        notes: source.notes,
+        valid_until: null,
+        service_description: source.service_description,
+        discount_amount: source.discount_amount ? Number(source.discount_amount) : null,
+        historical_total_amount: null,
+        quotation_date_text: null,
+        line_items: source.line_items.map((li, idx) => ({
+          product_id: li.product_id,
+          description: li.description,
+          quantity: li.quantity,
+          unit_price: li.unit_price,
+          rental_days: li.rental_days,
+          sort_order: idx,
+        })),
+      };
+      return createQuotation(input);
+    },
+    onSuccess: (created) => {
+      queryClient.invalidateQueries({ queryKey: ["quotations"] });
+      navigate(`/quotations/${created.id}`);
+    },
+    onError: () => alert("Failed to duplicate quotation."),
   });
 
   return (
@@ -64,6 +111,20 @@ export default function QuotationsPage() {
                 <td>{new Date(q.created_at).toLocaleDateString()}</td>
                 <td className="row-actions">
                   <Link to={`/quotations/${q.id}`}><button>Open</button></Link>
+                  <button
+                    onClick={() => duplicateMutation.mutate(q.id)}
+                    disabled={duplicateMutation.isPending}
+                  >
+                    Duplicate
+                  </button>
+                  <button
+                    className="danger"
+                    onClick={() => {
+                      if (confirm(`Delete quotation ${q.quote_number}?`)) deleteMutation.mutate(q.id);
+                    }}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
