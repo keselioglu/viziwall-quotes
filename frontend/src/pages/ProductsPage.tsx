@@ -125,6 +125,7 @@ export default function ProductsPage() {
       {showForm && (
         <ProductFormModal
           initial={editing ?? emptyForm}
+          existingUnits={Array.from(new Set(products?.map((p) => p.unit) ?? [])).sort()}
           onCancel={closeForm}
           onSubmit={handleSubmit}
           saving={createMutation.isPending || updateMutation.isPending}
@@ -134,15 +135,19 @@ export default function ProductsPage() {
   );
 }
 
+const ADD_NEW_UNIT = "__add_new_unit__";
+
 function ProductFormModal({
-  initial, onCancel, onSubmit, saving,
+  initial, existingUnits, onCancel, onSubmit, saving,
 }: {
   initial: ProductInput;
+  existingUnits: string[];
   onCancel: () => void;
   onSubmit: (input: ProductInput) => void;
   saving: boolean;
 }) {
   const [form, setForm] = useState<ProductInput>(initial);
+  const [addingUnit, setAddingUnit] = useState(!initial.unit || !existingUnits.includes(initial.unit));
 
   function set<K extends keyof ProductInput>(key: K, value: ProductInput[K]) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -185,11 +190,44 @@ function ProductFormModal({
         <div className="form-row">
           <label>
             Unit *
-            <input
-              required value={form.unit}
-              placeholder="m2, pcs, day, man, km..."
-              onChange={(e) => set("unit", e.target.value)}
-            />
+            {addingUnit ? (
+              <div className="inline-field-with-action">
+                <input
+                  required autoFocus value={form.unit}
+                  placeholder="m2, pcs, day, man, km..."
+                  onChange={(e) => set("unit", e.target.value)}
+                />
+                {existingUnits.length > 0 && (
+                  <button
+                    type="button"
+                    className="link-button"
+                    onClick={() => {
+                      setAddingUnit(false);
+                      set("unit", existingUnits[0]);
+                    }}
+                  >
+                    Choose existing
+                  </button>
+                )}
+              </div>
+            ) : (
+              <select
+                value={form.unit}
+                onChange={(e) => {
+                  if (e.target.value === ADD_NEW_UNIT) {
+                    set("unit", "");
+                    setAddingUnit(true);
+                  } else {
+                    set("unit", e.target.value);
+                  }
+                }}
+              >
+                {existingUnits.map((u) => (
+                  <option key={u} value={u}>{u}</option>
+                ))}
+                <option value={ADD_NEW_UNIT}>+ Add new unit...</option>
+              </select>
+            )}
           </label>
           <label>
             Unit Price (€) *
