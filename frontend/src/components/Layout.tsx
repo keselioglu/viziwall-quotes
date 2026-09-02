@@ -9,6 +9,7 @@ export default function Layout() {
       <nav className="sidebar">
         <div className="brand">Viziwall Quotes</div>
         <NavLink to="/" end>Quotations</NavLink>
+        <NavLink to="/schedule">Schedule</NavLink>
         <NavLink to="/customers">Customers</NavLink>
         <NavLink to="/products">Products</NavLink>
         <button className="logout-btn" onClick={logout}>Log out</button>

@@ -8,6 +8,7 @@ import CustomersPage from "./pages/CustomersPage";
 import ProductsPage from "./pages/ProductsPage";
 import QuotationsPage from "./pages/QuotationsPage";
 import QuotationEditorPage from "./pages/QuotationEditorPage";
+import SchedulePage from "./pages/SchedulePage";
 import "./app.css";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ export default function App() {
               <Route path="/" element={<QuotationsPage />} />
               <Route path="/quotations/new" element={<QuotationEditorPage />} />
               <Route path="/quotations/:id" element={<QuotationEditorPage />} />
+              <Route path="/schedule" element={<SchedulePage />} />
               <Route path="/customers" element={<CustomersPage />} />
               <Route path="/products" element={<ProductsPage />} />
             </Route>
