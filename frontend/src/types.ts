@@ -32,13 +32,7 @@ export interface Product {
   product_type: ProductType;
   name: string;
   description: string | null;
-  pixel_pitch_mm: string | null;
-  panel_width_mm: number | null;
-  panel_height_mm: number | null;
-  resolution_width_px: number | null;
-  resolution_height_px: number | null;
-  price_per_day: string;
-  price_per_week: string | null;
+  unit_price: string;
   unit: string;
   is_active: boolean;
   created_at: string;

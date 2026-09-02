@@ -72,17 +72,8 @@ class Product(Base):
     name = Column(String, nullable=False)
     description = Column(Text, nullable=True)
 
-    # LED wall specs — null for logistics-type products
-    pixel_pitch_mm = Column(Numeric(5, 2), nullable=True)
-    panel_width_mm = Column(Integer, nullable=True)
-    panel_height_mm = Column(Integer, nullable=True)
-    resolution_width_px = Column(Integer, nullable=True)
-    resolution_height_px = Column(Integer, nullable=True)
-
-    # Pricing — day rate always applies; week rate optional disccount rate.
-    price_per_day = Column(Numeric(10, 2), nullable=False)
-    price_per_week = Column(Numeric(10, 2), nullable=True)
-    unit = Column(String, nullable=False, default="day")  # "day", "week", "flat", "unit"
+    unit_price = Column(Numeric(10, 2), nullable=False)
+    unit = Column(String, nullable=False, default="pcs")  # "m2", "pcs", "day", "man", "km", ...
 
     is_active = Column(Boolean, default=True, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)

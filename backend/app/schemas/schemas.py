@@ -62,14 +62,8 @@ class ProductBase(BaseModel):
     product_type: ProductType
     name: str
     description: Optional[str] = None
-    pixel_pitch_mm: Optional[Decimal] = None
-    panel_width_mm: Optional[int] = None
-    panel_height_mm: Optional[int] = None
-    resolution_width_px: Optional[int] = None
-    resolution_height_px: Optional[int] = None
-    price_per_day: Decimal
-    price_per_week: Optional[Decimal] = None
-    unit: str = "day"
+    unit_price: Decimal
+    unit: str = "pcs"
     is_active: bool = True
 
 
@@ -81,13 +75,7 @@ class ProductUpdate(BaseModel):
     product_type: Optional[ProductType] = None
     name: Optional[str] = None
     description: Optional[str] = None
-    pixel_pitch_mm: Optional[Decimal] = None
-    panel_width_mm: Optional[int] = None
-    panel_height_mm: Optional[int] = None
-    resolution_width_px: Optional[int] = None
-    resolution_height_px: Optional[int] = None
-    price_per_day: Optional[Decimal] = None
-    price_per_week: Optional[Decimal] = None
+    unit_price: Optional[Decimal] = None
     unit: Optional[str] = None
     is_active: Optional[bool] = None
 

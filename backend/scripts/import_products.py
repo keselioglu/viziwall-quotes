@@ -11,9 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from app.database import SessionLocal
 from app.models import Product, ProductType
 
-# (product_type, name, description, unit, price_per_day)
-# price_per_day is reused generically as "unit price" — the app's line-item
-# math is unit_price * quantity, one flat rate per unit regardless of category.
+# (product_type, name, description, unit, unit_price)
 # Source: Viziwall_price-list_2026_Sep_v1.csv, valid 1/1/2026 - 6/31/2026.
 ROWS = [
     # --- Led Wall Panels And Accessories ---
@@ -85,7 +83,7 @@ def main():
                 name=name,
                 description=description,
                 unit=unit,
-                price_per_day=price,
+                unit_price=price,
                 is_active=True,
             ))
 

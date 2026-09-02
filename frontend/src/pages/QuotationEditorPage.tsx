@@ -100,7 +100,7 @@ export default function QuotationEditorPage() {
     updateItem(key, {
       product_id: product.id,
       description: product.description || product.name,
-      unit_price: product.price_per_day,
+      unit_price: product.unit_price,
     });
   }
 

@@ -7,14 +7,8 @@ const emptyForm: ProductInput = {
   product_type: "led_wall",
   name: "",
   description: "",
-  pixel_pitch_mm: null,
-  panel_width_mm: null,
-  panel_height_mm: null,
-  resolution_width_px: null,
-  resolution_height_px: null,
-  price_per_day: "0",
-  price_per_week: null,
-  unit: "day",
+  unit_price: "0",
+  unit: "pcs",
   is_active: true,
 };
 
@@ -88,7 +82,6 @@ export default function ProductsPage() {
 
       {products && categories.map(({ type, label }) => {
         const items = products.filter((p) => p.product_type === type);
-        const isLedWall = type === "led_wall";
         return (
           <div key={type}>
             <h2 className="section-title">{label}</h2>
@@ -97,8 +90,6 @@ export default function ProductsPage() {
                 <tr>
                   <th>Name</th>
                   <th>Description</th>
-                  {isLedWall && <th>Pixel Pitch</th>}
-                  {isLedWall && <th>Panel Size</th>}
                   <th>Unit</th>
                   <th>Price</th>
                   <th></th>
@@ -109,12 +100,8 @@ export default function ProductsPage() {
                   <tr key={p.id}>
                     <td>{p.name}</td>
                     <td>{p.description || "—"}</td>
-                    {isLedWall && <td>{p.pixel_pitch_mm ? `P${p.pixel_pitch_mm}` : "—"}</td>}
-                    {isLedWall && (
-                      <td>{p.panel_width_mm && p.panel_height_mm ? `${p.panel_width_mm}×${p.panel_height_mm}mm` : "—"}</td>
-                    )}
                     <td>{p.unit}</td>
-                    <td>{p.price_per_day} €</td>
+                    <td>{p.unit_price} €</td>
                     <td className="row-actions">
                       <button onClick={() => openEdit(p)}>Edit</button>
                       <button
@@ -127,7 +114,7 @@ export default function ProductsPage() {
                   </tr>
                 ))}
                 {items.length === 0 && (
-                  <tr><td colSpan={isLedWall ? 7 : 5} className="empty-row">No products in this category yet.</td></tr>
+                  <tr><td colSpan={5} className="empty-row">No products in this category yet.</td></tr>
                 )}
               </tbody>
             </table>
@@ -160,8 +147,6 @@ function ProductFormModal({
   function set<K extends keyof ProductInput>(key: K, value: ProductInput[K]) {
     setForm((f) => ({ ...f, [key]: value }));
   }
-
-  const isLedWall = form.product_type === "led_wall";
 
   return (
     <div className="modal-backdrop" onClick={onCancel}>
@@ -197,82 +182,22 @@ function ProductFormModal({
           <textarea value={form.description || ""} onChange={(e) => set("description", e.target.value)} />
         </label>
 
-        {isLedWall && (
-          <>
-            <div className="form-row">
-              <label>
-                Pixel Pitch (mm)
-                <input
-                  type="number" step="0.1"
-                  value={form.pixel_pitch_mm ?? ""}
-                  onChange={(e) => set("pixel_pitch_mm", e.target.value || null)}
-                />
-              </label>
-              <label>
-                Panel Width (mm)
-                <input
-                  type="number"
-                  value={form.panel_width_mm ?? ""}
-                  onChange={(e) => set("panel_width_mm", e.target.value ? Number(e.target.value) : null)}
-                />
-              </label>
-              <label>
-                Panel Height (mm)
-                <input
-                  type="number"
-                  value={form.panel_height_mm ?? ""}
-                  onChange={(e) => set("panel_height_mm", e.target.value ? Number(e.target.value) : null)}
-                />
-              </label>
-            </div>
-            <div className="form-row">
-              <label>
-                Resolution Width (px)
-                <input
-                  type="number"
-                  value={form.resolution_width_px ?? ""}
-                  onChange={(e) => set("resolution_width_px", e.target.value ? Number(e.target.value) : null)}
-                />
-              </label>
-              <label>
-                Resolution Height (px)
-                <input
-                  type="number"
-                  value={form.resolution_height_px ?? ""}
-                  onChange={(e) => set("resolution_height_px", e.target.value ? Number(e.target.value) : null)}
-                />
-              </label>
-            </div>
-          </>
-        )}
-
         <div className="form-row">
           <label>
-            Price / Day *
+            Unit *
             <input
-              required type="number" step="0.01"
-              value={form.price_per_day}
-              onChange={(e) => set("price_per_day", e.target.value)}
+              required value={form.unit}
+              placeholder="m2, pcs, day, man, km..."
+              onChange={(e) => set("unit", e.target.value)}
             />
           </label>
-          {isLedWall && (
-            <label>
-              Price / Week
-              <input
-                type="number" step="0.01"
-                value={form.price_per_week ?? ""}
-                onChange={(e) => set("price_per_week", e.target.value || null)}
-              />
-            </label>
-          )}
           <label>
-            Unit
-            <select value={form.unit} onChange={(e) => set("unit", e.target.value)}>
-              <option value="day">per day</option>
-              <option value="week">per week</option>
-              <option value="flat">flat fee</option>
-              <option value="unit">per unit</option>
-            </select>
+            Unit Price (€) *
+            <input
+              required type="number" step="0.01"
+              value={form.unit_price}
+              onChange={(e) => set("unit_price", e.target.value)}
+            />
           </label>
         </div>
 
