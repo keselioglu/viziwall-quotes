@@ -256,9 +256,10 @@ export default function QuotationEditorPage() {
             const qty = parseFloat(item.quantity) || 0;
             const price = parseFloat(item.unit_price) || 0;
             const lineTotal = qty * price;
+            const unit = products?.find((p) => p.id === item.product_id)?.unit;
             return (
               <tr key={item.key}>
-                <td>
+                <td className="col-product">
                   <select
                     value={item.product_id || ""}
                     onChange={(e) => pickProduct(item.key, e.target.value)}
@@ -269,18 +270,21 @@ export default function QuotationEditorPage() {
                     ))}
                   </select>
                 </td>
-                <td>
+                <td className="col-description">
                   <input
                     value={item.description}
                     onChange={(e) => updateItem(item.key, { description: e.target.value })}
                   />
                 </td>
                 <td>
-                  <input
-                    type="number" step="0.01" className="num-input"
-                    value={item.quantity}
-                    onChange={(e) => updateItem(item.key, { quantity: e.target.value })}
-                  />
+                  <div className="qty-with-unit">
+                    <input
+                      type="number" step="0.01" className="num-input"
+                      value={item.quantity}
+                      onChange={(e) => updateItem(item.key, { quantity: e.target.value })}
+                    />
+                    {unit && <span className="unit-label">{unit}</span>}
+                  </div>
                 </td>
                 <td>
                   <input
