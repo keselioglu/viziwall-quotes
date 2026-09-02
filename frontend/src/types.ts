@@ -1,4 +1,4 @@
-export type ProductType = "led_wall" | "logistics";
+export type ProductType = "led_wall" | "displays" | "audio" | "it_equipment" | "services";
 export type QuoteStatus =
   | "draft"
   | "sent"

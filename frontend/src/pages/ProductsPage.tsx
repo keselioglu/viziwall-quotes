@@ -18,6 +18,14 @@ const emptyForm: ProductInput = {
   is_active: true,
 };
 
+const categories: { type: ProductType; label: string }[] = [
+  { type: "led_wall", label: "LED Wall Panels & Accessories" },
+  { type: "displays", label: "TVs & Touch Screen Displays" },
+  { type: "audio", label: "Audio" },
+  { type: "it_equipment", label: "Laptops & Tablets" },
+  { type: "services", label: "Services" },
+];
+
 export default function ProductsPage() {
   const [editing, setEditing] = useState<Product | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -68,9 +76,6 @@ export default function ProductsPage() {
     }
   }
 
-  const ledWalls = products?.filter((p) => p.product_type === "led_wall") ?? [];
-  const logistics = products?.filter((p) => p.product_type === "logistics") ?? [];
-
   return (
     <div>
       <div className="page-header">
@@ -81,75 +86,54 @@ export default function ProductsPage() {
       {isLoading && <p>Loading...</p>}
       {error && <p className="form-error">Failed to load products.</p>}
 
-      {products && (
-        <>
-          <h2 className="section-title">LED Wall Panels</h2>
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Pixel Pitch</th>
-                <th>Panel Size</th>
-                <th>Price / Day</th>
-                <th>Price / Week</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {ledWalls.map((p) => (
-                <tr key={p.id}>
-                  <td>{p.name}</td>
-                  <td>{p.pixel_pitch_mm ? `P${p.pixel_pitch_mm}` : "—"}</td>
-                  <td>{p.panel_width_mm && p.panel_height_mm ? `${p.panel_width_mm}×${p.panel_height_mm}mm` : "—"}</td>
-                  <td>{p.price_per_day} €</td>
-                  <td>{p.price_per_week ? `${p.price_per_week} €` : "—"}</td>
-                  <td className="row-actions">
-                    <button onClick={() => openEdit(p)}>Edit</button>
-                    <button
-                      className="danger"
-                      onClick={() => { if (confirm(`Deactivate ${p.name}?`)) deleteMutation.mutate(p.id); }}
-                    >
-                      Deactivate
-                    </button>
-                  </td>
+      {products && categories.map(({ type, label }) => {
+        const items = products.filter((p) => p.product_type === type);
+        const isLedWall = type === "led_wall";
+        return (
+          <div key={type}>
+            <h2 className="section-title">{label}</h2>
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Description</th>
+                  {isLedWall && <th>Pixel Pitch</th>}
+                  {isLedWall && <th>Panel Size</th>}
+                  <th>Unit</th>
+                  <th>Price</th>
+                  <th></th>
                 </tr>
-              ))}
-              {ledWalls.length === 0 && <tr><td colSpan={6} className="empty-row">No LED wall products yet.</td></tr>}
-            </tbody>
-          </table>
-
-          <h2 className="section-title">Logistics &amp; Services</h2>
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Unit</th>
-                <th>Price</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {logistics.map((p) => (
-                <tr key={p.id}>
-                  <td>{p.name}</td>
-                  <td>{p.unit}</td>
-                  <td>{p.price_per_day} €</td>
-                  <td className="row-actions">
-                    <button onClick={() => openEdit(p)}>Edit</button>
-                    <button
-                      className="danger"
-                      onClick={() => { if (confirm(`Deactivate ${p.name}?`)) deleteMutation.mutate(p.id); }}
-                    >
-                      Deactivate
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {logistics.length === 0 && <tr><td colSpan={4} className="empty-row">No logistics products yet.</td></tr>}
-            </tbody>
-          </table>
-        </>
-      )}
+              </thead>
+              <tbody>
+                {items.map((p) => (
+                  <tr key={p.id}>
+                    <td>{p.name}</td>
+                    <td>{p.description || "—"}</td>
+                    {isLedWall && <td>{p.pixel_pitch_mm ? `P${p.pixel_pitch_mm}` : "—"}</td>}
+                    {isLedWall && (
+                      <td>{p.panel_width_mm && p.panel_height_mm ? `${p.panel_width_mm}×${p.panel_height_mm}mm` : "—"}</td>
+                    )}
+                    <td>{p.unit}</td>
+                    <td>{p.price_per_day} €</td>
+                    <td className="row-actions">
+                      <button onClick={() => openEdit(p)}>Edit</button>
+                      <button
+                        className="danger"
+                        onClick={() => { if (confirm(`Deactivate ${p.name}?`)) deleteMutation.mutate(p.id); }}
+                      >
+                        Deactivate
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+                {items.length === 0 && (
+                  <tr><td colSpan={isLedWall ? 7 : 5} className="empty-row">No products in this category yet.</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        );
+      })}
 
       {showForm && (
         <ProductFormModal
@@ -197,8 +181,9 @@ function ProductFormModal({
             value={form.product_type}
             onChange={(e) => set("product_type", e.target.value as ProductType)}
           >
-            <option value="led_wall">LED Wall Panel</option>
-            <option value="logistics">Logistics / Service</option>
+            {categories.map(({ type, label }) => (
+              <option key={type} value={type}>{label}</option>
+            ))}
           </select>
         </label>
 

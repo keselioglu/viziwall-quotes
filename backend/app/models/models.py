@@ -16,7 +16,10 @@ def gen_uuid():
 
 class ProductType(str, enum.Enum):
     led_wall = "led_wall"
-    logistics = "logistics"
+    displays = "displays"
+    audio = "audio"
+    it_equipment = "it_equipment"
+    services = "services"
 
 
 class QuoteStatus(str, enum.Enum):
