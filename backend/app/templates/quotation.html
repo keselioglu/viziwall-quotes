@@ -79,7 +79,6 @@
         <tr>
             <th style="width: 48%;">Description</th>
             <th class="num">Qty</th>
-            <th class="num">Days</th>
             <th class="num">Unit Price</th>
             <th class="num">Total</th>
         </tr>
@@ -89,7 +88,6 @@
         <tr>
             <td>{{ item.description }}</td>
             <td class="num">{{ item.quantity }}</td>
-            <td class="num">{{ item.rental_days or '—' }}</td>
             <td class="num">{{ '%.2f'|format(item.unit_price) }} {{ quotation.currency }}</td>
             <td class="num">{{ '%.2f'|format(item.line_total) }} {{ quotation.currency }}</td>
         </tr>

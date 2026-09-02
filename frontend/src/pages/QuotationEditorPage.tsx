@@ -18,7 +18,6 @@ function newLineItem(): DraftLineItem {
     description: "",
     quantity: "1",
     unit_price: "0",
-    rental_days: null,
     sort_order: 0,
   };
 }
@@ -102,7 +101,6 @@ export default function QuotationEditorPage() {
       product_id: product.id,
       description: product.name,
       unit_price: product.price_per_day,
-      rental_days: product.product_type === "led_wall" ? 1 : null,
     });
   }
 
@@ -110,8 +108,7 @@ export default function QuotationEditorPage() {
     const subtotal = items.reduce((sum, it) => {
       const qty = parseFloat(it.quantity) || 0;
       const price = parseFloat(it.unit_price) || 0;
-      const days = it.rental_days || 1;
-      return sum + qty * price * days;
+      return sum + qty * price;
     }, 0);
     const tax = subtotal * ((parseFloat(taxRate) || 0) / 100);
     return { subtotal, tax, total: subtotal + tax };
@@ -143,7 +140,6 @@ export default function QuotationEditorPage() {
         description: it.description,
         quantity: it.quantity,
         unit_price: it.unit_price,
-        rental_days: it.rental_days,
         sort_order: idx,
       })),
     };
@@ -250,7 +246,6 @@ export default function QuotationEditorPage() {
             <th>Product</th>
             <th>Description</th>
             <th>Qty</th>
-            <th>Days</th>
             <th>Unit Price</th>
             <th>Line Total</th>
             <th></th>
@@ -260,8 +255,7 @@ export default function QuotationEditorPage() {
           {items.map((item) => {
             const qty = parseFloat(item.quantity) || 0;
             const price = parseFloat(item.unit_price) || 0;
-            const days = item.rental_days || 1;
-            const lineTotal = qty * price * days;
+            const lineTotal = qty * price;
             return (
               <tr key={item.key}>
                 <td>
@@ -286,13 +280,6 @@ export default function QuotationEditorPage() {
                     type="number" step="0.01" className="num-input"
                     value={item.quantity}
                     onChange={(e) => updateItem(item.key, { quantity: e.target.value })}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="number" className="num-input"
-                    value={item.rental_days ?? ""}
-                    onChange={(e) => updateItem(item.key, { rental_days: e.target.value ? Number(e.target.value) : null })}
                   />
                 </td>
                 <td>

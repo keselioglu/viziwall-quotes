@@ -78,7 +78,6 @@ export default function QuotationsPage() {
           description: li.description,
           quantity: li.quantity,
           unit_price: li.unit_price,
-          rental_days: li.rental_days,
           sort_order: idx,
         })),
       };

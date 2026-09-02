@@ -106,7 +106,6 @@ class QuoteLineItemBase(BaseModel):
     description: str
     quantity: Decimal = Decimal("1")
     unit_price: Decimal
-    rental_days: Optional[int] = None
     sort_order: int = 0
 
 

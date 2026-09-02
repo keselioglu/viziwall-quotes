@@ -137,7 +137,6 @@ class QuoteLineItem(Base):
     description = Column(String, nullable=False)
     quantity = Column(Numeric(10, 2), nullable=False, default=1)
     unit_price = Column(Numeric(10, 2), nullable=False)
-    rental_days = Column(Integer, nullable=True)
 
     sort_order = Column(Integer, default=0, nullable=False)
 
@@ -146,5 +145,4 @@ class QuoteLineItem(Base):
 
     @property
     def line_total(self):
-        days_multiplier = self.rental_days if self.rental_days else 1
-        return self.quantity * self.unit_price * days_multiplier
+        return self.quantity * self.unit_price

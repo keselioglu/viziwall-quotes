@@ -13,8 +13,7 @@ from app.models import Product, ProductType
 
 # (product_type, name, description, unit, price_per_day)
 # price_per_day is reused generically as "unit price" — the app's line-item
-# math is unit_price * quantity * rental_days, and rental_days is left at 1
-# for anything not actually billed per rental day.
+# math is unit_price * quantity, one flat rate per unit regardless of category.
 # Source: Viziwall_price-list_2026_Sep_v1.csv, valid 1/1/2026 - 6/31/2026.
 ROWS = [
     # --- Led Wall Panels And Accessories ---

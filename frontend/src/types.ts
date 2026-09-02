@@ -53,7 +53,6 @@ export interface QuoteLineItem {
   description: string;
   quantity: string;
   unit_price: string;
-  rental_days: number | null;
   sort_order: number;
   line_total: string;
 }
