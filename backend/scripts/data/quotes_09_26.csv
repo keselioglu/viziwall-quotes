@@ -1,0 +1,115 @@
+Quote Number,Status,Customer ID,Event Name,Venue,Event Dates,Service Description,Date of Quotation,Discount Amount,Total Amount,Line Items Total (check),Variance vs Quote
+0882501,Approved,250012,InterTabac 2025,Dortmund Trade Fair,"September 18-20, 2025",End-to-End LED Wall Rental & Setup 20m2 Flat,09/2025,500.00,6500.00,0.00,-7000.00
+1882501,Declined,250018,Busworld Europe,Brussels Expo,"October 4-9, 2025",End-to-End LED Wall Rental & Setup 34m2 Flat,09/2025,0.00,15340.00,15340.00,0.00
+2182501-R1,Declined,250012,CPHI Frankfurt,Messe,"October 28-30, 2025",End-to-End LED Wall Rental & Setup 4 Led walls 26.75m2 Total Flat,09/2025,908.75,14625.00,15533.75,0.00
+2782501,Declined,250026,Eans 2025,Vienna Congress & Convention Center,"October 5-9, 2025",End-to-End LED Wall Rental & Setup 3.75m2 Total Flat,09/2025,0.00,3440.00,3440.00,0.00
+23102501,New Version Sent,250027,Euro Shop 2026,Messe Dusseldorf,"February 22-26, 2026",End-to-End LED Wall Rental & Setup 12.5m2 Total Flat,09/2025,0.00,5170.00,5170.00,0.00
+24102501,New Version Sent,250027,Euro Shop 2026,Messe Dusseldorf,"February 22-26, 2026",End-to-End LED Wall Rental & Setup 6m2 Total Flat,09/2025,0.00,4100.00,4100.00,0.00
+12112501,Declined,250028,Light + Building 2026,Messe Frankfurt,"March 8-13, 2026",End-to-End LED Wall Rental & Setup 8m2 Total Flat,09/2025,1092.00,4368.00,5460.00,0.00
+24102501-v2,New Version Sent,250027,Euro Shop 2026,Messe Dusseldorf,"February 22-26, 2026",End-to-End LED Wall Rental & Setup 11.25m2 Total Flat,09/2025,0.00,4895.00,4895.00,0.00
+20112502,Cancelled,250029,WIRE & TUBE 2026,Messe Dusseldorf,13-17 April 2026,End-to-End LED Wall Rental & Setup 19.5m2 Total Flexible/Cylindrical,09/2025,0.00,9615.00,9615.00,0.00
+21112501,Declined,250030,Euro Shop 2026,Messe Dusseldorf,"February 22-26, 2026",End-to-End LED Wall&Displays Rental & Setup,10/2025,1395.00,12550.00,13945.00,0.00
+26112501,Declined,250031,Euro Shop 2026,Messe Dusseldorf,"February 22-26, 2026",End-to-End LED Wall Rental & Setup,10/2025,1325.81,7512.94,8838.75,0.00
+3122501,New Version Sent,250032,Euro Shop 2026,Messe Dusseldorf,"February 22-26, 2026",End-to-End LED Wall Rental & Setup 3m2 Total Flat,10/2025,0.00,1530.00,1530.00,0.00
+5122501,Declined,250033,LogiMat Stuttgart 2026,Stuttgart Trade Fair Centre,"March 24 - 26, 2026",End-to-End LED Wall Rental & Setup 12m2 Total Flat,10/2025,0.00,3640.00,3640.00,0.00
+5122502,Approved,250034,opti Munich 2026,Messe Munchen,"Jan 16 - 18, 2026",End-to-End LED Wall Rental & Setup 3m2 Total Flat,10/2025,0.00,2540.00,2540.00,0.00
+9122501,Declined,250035,Nobu Hotel Barcelona,"Barcelona, Spain","Jan 19-21, 2026",End-to-End LED Wall an Lighting Rental & Setup,10/2025,0.00,7965.00,7965.00,0.00
+11122501,Cancelled,250036,INTERPACK - 2026,Messe Dusseldorf,"May 7-13, 2026",End-to-End Booth Stand Construction&Setup,10/2025,0.00,15446.20,15446.20,0.00
+12122501,Declined,250037,Ceramitec 2026,Messe Munchen,"March 24-26, 2026",End-to-End 3.75m2 LED Wall&Displays Rental & Setup,10/2025,0.00,3933.75,3933.75,0.00
+3122501-V2,New Version Sent,250032,Euro Shop 2026,Messe Dusseldorf,"February 22-26, 2026",End-to-End LED Wall&Displays Rental and Setup 4.5m2 Total Flat,10/2025,330.00,3600.00,3930.00,0.00
+18122501,Cancelled,250038,INTERPACK - 2026,Messe Dusseldorf,"May 7-13, 2026",End-to-End LED Wall Rental & Setup 6m2 Total Flat,11/2025,0.00,2405.00,2405.00,0.00
+23122501,Declined,250039,Euroguss 2026,Nurnberg Messe,"Jan 13-15, 2026",End-to-End LED Wall&Dislpays Rental and Setup,11/2025,0.00,3375.00,3375.00,0.00
+23122502,Declined,250039,Domotex 2026,Hannover Exhibition Centre,"Jan 19-22, 2026",End-to-End LED Wall&Dislpays Rental and Setup,11/2025,0.00,2748.75,2748.75,0.00
+23122503,Declined,250039,E-World 2026,Messe Essen,"February 10 - 12, 2026",End-to-End LED Wall&Dislpays Rental and Setup,11/2025,0.00,4585.00,4585.00,0.00
+23122504,Declined,250039,Euro Shop 2026,Messe Dusseldorf,"February 22-26, 2026",End-to-End LED Wall&Dislpays Rental and Setup,11/2025,0.00,4531.25,4531.25,0.00
+3122501-V3,Approved,250032,Euro Shop 2026,Messe Dusseldorf,"February 22-26, 2026",End-to-End LED Wall&Displays Rental and Setup 4.5m2 Total Flat,11/2025,165.00,2100.00,2265.00,0.00
+26-050102,Declined,250039,FRUIT LOGISTICA 2026,Messe Berlin,4-6 February 2026,End-to-End LED Dislpays Rental and Setup,11/2025,0.00,1300.00,1300.00,0.00
+26-050103xx,Cancelled,250039,Intertraffic 2026,RAI Amsterdam,10 - 13 MAR 2026,End-to-End Dislpays Rental and Setup,11/2025,0.00,2800.00,2800.00,0.00
+26-050103,New Version Sent,250039,LogiMat Stuttgart 2026,Stuttgart Trade Fair Centre,"March 24 - 26, 2026",End-to-End Dislpays Rental and Setup,12/2025,0.00,1800.00,1800.00,0.00
+26-090102-v1,New Version Sent,260011,4.5m2 Total Flat,Messe Frankfurt,3 Day Event-Dates TBD,End-to-End LED Wall Rental & Setup,12/2025,0.00,2370.00,2370.00,0.00
+26-090102-v2,Declined,260011,9m2 Total Flat,Messe Frankfurt,3 Day Event-Dates TBD,End-to-End LED Wall Rental & Setup,12/2025,0.00,3465.00,3465.00,0.00
+26-150101,Declined,260012,E-World 2026,Messe Essen,"February 10 - 12, 2026",End-to-End LED Wall&Dislpays Rental and Setup,12/2025,0.00,22725.00,22725.00,0.00
+26-150102,Declined,250030,Hannover Messe 2026,Messe Hannover,"April 20-24, 2026",End-to-End LED Wall Rental & Setup,12/2025,0.00,20890.00,20890.00,0.00
+26-150103,Declined,260013,,Akademie der bildenden Kunste in Munchen,"February 5-10, 2026",End-to-End LED Wall Rental & Setup,12/2025,0.00,4372.50,4372.50,0.00
+26-170101,Declined,260014,INTERPACK - 2026,Messe Dusseldorf,"May 7-13, 2026",End-to-End LED Wall Rental & Setup 3.75m2 Total Flat,12/2025,0.00,2860.00,2860.00,0.00
+26-220101,Declined,260015,MIPIM - 2026,"Palais des Festivals, Cannes","March 9-13, 2026",End-to-End LED Wall and Displays Rental & Setup,12/2025,0.00,9336.25,9336.25,0.00
+26-260102,Declined,260016,IWA - 2026,Nurnberg Messe,"February 26- March 1, 2026",End-to-End Displays Rental & Setup,12/2025,500.00,500.00,1000.00,0.00
+24102501-v3,New Version Sent,250027,Euro Shop 2026,Messe Dusseldorf,"February 22-26, 2026",End-to-End LED Wall Rental & Setup 11.25m2 Total Flat,01/2026,2450.00,2445.00,4895.00,0.00
+26-290101,Declined,260017,Spoga Horse 2026,Koeln Messe,"February 7-9, 2026",End-to-End Displays & Setup,01/2026,0.00,1600.00,1600.00,0.00
+26-150102-V2,Declined,250030,Hannover Messe 2026,Messe Hannover,"April 20-24, 2026",End-to-End LED Wall Rental & Setup,01/2026,0.00,24932.00,24932.00,0.00
+26-210201,Approved,260022,Euro Shop 2026,Messe Dusseldorf,"February 22-26, 2026",End-to-End AV Rental&Setup,01/2026,0.00,280.00,280.00,0.00
+26-030201,Declined,260019,Vitafoods Barcelona,Fira Barcelona,"May 5-7, 2026",End-to-End LED Wall Rental & Setup,01/2026,0.00,3047.50,3047.50,0.00
+26-020202,New Version Sent,260016,Automechanika Frankfurt,Messe Frankfurt,"September 8-12, 2026",End-to-End LED Wall Rental & Setup,01/2026,0.00,2430.00,2430.00,0.00
+24102501-v4,Declined,250027,Euro Shop 2026,Messe Dusseldorf,"February 22-26, 2026",End-to-End LED Wall Rental & Setup 6m2 Total Flat,01/2026,2050.00,2050.00,4100.00,0.00
+26-060201,Declined,250039,Embedded World 2026,Nurnberg Messe,"March 10 - 12, 2026",End-to-End Dislpays Rental and Setup,01/2026,0.00,4705.00,4705.00,0.00
+26-050103-V2,Cancelled,250039,LogiMat Stuttgart 2026,Stuttgart Trade Fair Centre,"March 24 - 26, 2026",End-to-End Led Wall&Dislpays Rental and Setup,01/2026,0.00,7485.00,7485.00,0.00
+26-110202,Declined,260020,ITB Berlin 2027,Messe Berlin,"3 days in March, 2027",End-to-End LED Wall Rental & Setup 9.75m2 Total Curved,02/2026,0.00,4433.75,4433.75,0.00
+26-140201,Declined,260021,ProWein 2026,Messe Dusseldorf,"March 15-17, 2026",End-to-End LED Wall Rental & Setup 3m2 Total Flat,02/2026,0.00,1700.00,1700.00,0.00
+26-170201,Declined,260022,ITB Berlin 2026,Messe Berlin,"3 - 5 March, 2026",End-to-End LED Wall Rental & Setup 13m2 Total Flat,02/2026,1425.00,3760.00,5185.00,0.00
+26-190201,Declined,260023,Private Event,Dusseldorf Clayton Hotel,"3 - 4 March, 2026",End-to-End Displays Rental & Setup,02/2026,0.00,800.00,800.00,0.00
+26-120301,Approved,250026,Seafood Expo - 2026,Fira Barcelona,"April 21-23, 2026",End-to-End LED Wall Rental & Setup 6m2 Total Flat,02/2026,1010.00,2400.00,3410.00,0.00
+26-040301,Declined,260024,INTERPACK - 2026,Messe Dusseldorf,"May 7-13, 2026",End-to-End LED Wall Rental & Setup 12.25m2 Total Flexible,02/2026,1218.75,3655.00,4873.75,0.00
+26-050301,Cancelled,260024,Fiberdays - 2026,Messe Frankfurt,"March 25-26, 2026",End-to-End LED Wall Rental & Setup 4m2 Total Flat,02/2026,0.00,2385.00,2385.00,0.00
+26-050302,Cancelled,260021,ProWein 2026,Messe Dusseldorf,"March 15-17, 2026",End-to-End Stand Construction & Setup,02/2026,0.00,,0.00,
+26-110302,Cancelled,260025,,Parc Chanot,"March 23 - 24, 2026",End-to-End Led Wall&Dislpays Rental and Setup,03/2026,0.00,4565.00,4565.00,0.00
+26-280301,Approved,260026,ESCMID Munich,Messe Munchen,"April 17-21, 2026",End-to-End Displays Rental & Setup,03/2026,0.00,1630.00,1630.00,0.00
+26-170302,New Version Sent,250027,IFAT Munich,Messe Munchen,"May 4-7, 2026",End-to-End LED Wall Rental & Setup,03/2026,494.50,4450.50,4945.00,0.00
+26-260301,Declined,250027,Chemspec Europe,Koelnmesse,"May 6-7, 2026",End-to-End LED Wall Rental & Setup,03/2026,0.00,4455.00,4455.00,0.00
+26-030402,Approved,260027,Techtextil,Messe Frankfurt,"April 21-24, 2026",End-to-End LED Wall&Audio Rental & Setup,03/2026,0.00,2885.00,2885.00,0.00
+26-300102,Approved,260018,IFAT Munich,Messe Munchen,"May 4-7, 2026",End-to-End LED Wall Rental & Setup,03/2026,0.00,2705.00,2705.00,0.00
+26-270301,Approved,250034,IFAT Munich,Messe Munchen,"May 4-7, 2026",End-to-End Displays Rental & Setup,03/2026,0.00,1250.00,1250.00,0.00
+26-170302-V2,Approved,250027,IFAT Munich,Messe Munchen,"May 4-7, 2026",End-to-End LED Wall &AudioRental & Setup,03/2026,494.50,5500.50,5995.00,0.00
+26-040802,Approved,260031,Chemspec Europe,Koelnmesse,"May 6-7, 2026",End-to-End LED Wall Rental & Setup,03/2026,0.00,1485.00,1485.00,0.00
+26-060402,New Version Sent,260028,,,,,04/2026,0.00,4450.00,4450.00,0.00
+26-060403,Cancelled,260030,IFAT Munich,Messe Munchen,"May 4-7, 2026",End-to-End LED Wall & TV Rental & Setup,04/2026,740.00,6700.00,7440.00,0.00
+26-170302-V4,Approved,250027,IFAT Munich,Messe Munchen,"May 4-7, 2026",End-to-End LED Wall &AudioRental & Setup,04/2026,690.00,5100.00,5790.00,0.00
+26-080401,New Version Sent,260028,Private Event,Hotel in Munich,June 22 2026,End-to-End LED Wall&Audio Rental & Setup,04/2026,195.00,1700.00,1895.00,0.00
+26-300402,Approved,260035,Beauty Istanbul - 2026,TUYAP,"May 7-9, 2026",End-to-End LED Wall Rental & Setup 7.5m2 Total Flat 2.6,04/2026,0.00,1847.50,1847.50,0.00
+26-060402-v2,Approved,260028,Intersolar,Messe Munchen,"June 23-25, 2026",End-to-End LED Wall&Audio Rental & Setup,04/2026,535.00,4815.00,5350.00,0.00
+26-210402,Waiting,260032,Intersolar,Messe Munchen,"June 23-25, 2026",End-to-End LED Wall Rental & Setup,04/2026,0.00,12655.00,12655.00,0.00
+26-080401-V3,Approved,260028,Private Event,Hotel in Munich,June 22 2026,End-to-End LED Wall&Audio Rental & Setup,04/2026,195.00,2510.00,2705.00,0.00
+26-200501-V2,Approved,260038,Private Event,The Westin Grand Frankfurt,"June 24, 2026",End-to-End LED Wall Rental & Setup 11.25m2 Flat,04/2026,232.50,5000.00,5232.50,0.00
+26-270401,Cancelled,250027,IFAT Munich,Messe Munchen,"May 4-7, 2026",End-to-End LED Wall &AudioRental & Setup,05/2026,0.00,350.00,350.00,0.00
+26-280401,New Version Sent,250038,IAA Transportation 2026,Hannover Messe,"September 15-20, 2026",End-to-End LED Wall Rental & Setup,05/2026,0.00,2656.00,2656.00,0.00
+26-210403,Follow up sent,260033,Automechanika Frankfurt,Messe Frankfurt,"September 8-12, 2026",End-to-End LED Wall and Audio Rental & Setup,05/2026,0.00,2060.00,2060.00,0.00
+26-040602,Follow up sent,260033,Airmed World Congress2026,Munich,"September 16 to 18, 2026",End-to-End LED Wall and Audio Rental & Setup,05/2026,0.00,3130.00,3130.00,0.00
+26-170602,Follow up sent,260016,Automechanika Frankfurt,Messe Frankfurt,"September 8-12, 2026",End-to-End LED Wall Rental & Setup,05/2026,0.00,7987.50,7987.50,0.00
+26-120501,Cancelled,260036,TECMA 2026,Ifema Madrid,"June 9-11, 2026",End-to-End LED Wall Rental & Setup 6m2 Total Flat 2.6,05/2026,0.00,3620.00,3620.00,0.00
+26-280401-V2,Approved,250038,IAA Transportation 2026,Hannover Messe,"September 15-20, 2026",End-to-End LED Wall Rental & Setup,05/2026,0.00,3130.00,3130.00,0.00
+26-020202-v2,Follow up sent,260016,Automechanika Frankfurt,Messe Frankfurt,"September 8-12, 2026",End-to-End LED Wall Rental & Setup,05/2026,0.00,1923.75,1923.75,0.00
+26-140502,Cancelled,260037,gamescom 2026,Koelnmesse,"August 26-30, 2026",End-to-End LED Wall Rental & Setup 18m2 Flat,06/2026,0.00,5850.00,5850.00,0.00
+26-200501,New Version Sent,260038,Private Event,Venue in Frankfurt,"June 24, 2026",End-to-End LED Wall Rental & Setup 12.5m2 Flat,06/2026,0.00,5620.00,5620.00,0.00
+26-090402,Follow up sent,260020,AUTOMECHANIKA,Messe Frankfurt,8-12 September 2026,End-to-End LED Wall Rental & Setup 15m2 Total,06/2026,0.00,5973.75,5973.75,0.00
+26-200503,Cancelled,260037,gamescom 2026,Koelnmesse,"August 26-30, 2026",End-to-End Displays Rental & Setup,06/2026,0.00,3490.00,3490.00,0.00
+26-260302,New Version Sent,250028,Glasstec - 2026,Messe Dusseldorf,"October 20-23, 2026",End-to-End LED Wall Rental & Setup 7m2 Total Flat,,0.00,2305.00,2305.00,0.00
+26-280402-V2,Approved,260034,Glasstec - 2026,Messe Dusseldorf,"October 20-23, 2026",End-to-End LED Wall Rental & Setup 19.66m2 Total Flat 1.9,,227.00,9000.00,9227.00,0.00
+26-100602,Declined,260038,Private Event,The Westin Grand Frankfurt,"June 24, 2026",End-to-End LED Audio System Rental & Setup,,180.00,1880.00,2060.00,0.00
+26-280403,New Version Sent,260034,Glasstec - 2026,Messe Dusseldorf,"October 20-23, 2026",End-to-End LED Wall Rental & Setup 20m2 Total Flat 2.6,,0.00,5880.00,5880.00,0.00
+26-200502,Declined,260039,Private Event,KW Berlin,5.10.2026-01.01.2027,End-to-End LED Wall Rental & Setup 14m2 Total Flat,,0.00,20900.00,20900.00,0.00
+26-270602,New Version Sent,250018,IAA Transportation 2026,Hannover Messe,"September 14-20, 2026",End-to-End LED Wall Rental & Setup 45m2 Flat,,0.00,19545.00,19930.00,385.00
+26-270603,Cancelled,260040,Chillventa,Nuernberg Messe,"October 13-15, 2026",End-to-End LED Wall Rental & Setup 20m2 Flat,,0.00,6980.00,6980.00,0.00
+26-020701,New Version Sent,260041,Retail Store,"Osnabruck, Germany","September 30- October 28, 2026",End-to-End LED Wall Rental & Setup 6m2 Flat,,0.00,7690.00,7690.00,0.00
+26-260302-V2,Approved,250028,Glasstec - 2026,Messe Dusseldorf,"October 20-23, 2026",End-to-End LED Wall Rental & Setup 7m2 Total Flat,,0.00,2505.00,2505.00,0.00
+26-070702,Approved,260034,Glasstec - 2026,Messe Dusseldorf,"October 20-23, 2026",End-to-End Manufacturing & Setup & Dismantling 55m2 Stand,,0.00,19750.00,0.00,-19750.00
+26-270602-dup,Declined,250018,IAA Transportation 2026,Hannover Messe,"September 14-20, 2026",End-to-End LED Wall Rental & Setup 45m2 Flat,,0.00,19545.00,19930.00,385.00
+26-020701-V2,Declined,260041,Retail Store,"Osnabruck, Germany","September 30- October 28, 2026",End-to-End LED Wall Rental & Setup 6m2 Flat,,0.00,15630.00,15630.00,0.00
+26-070702-V2,Approved,260034,Glasstec - 2026,Messe Dusseldorf,"October 20-23, 2026",End-to-End Manufacturing & Setup & Dismantling 55m2 Stand,,2155.77,19401.93,0.00,-21557.70
+26-150702,Waiting,260042,WindEnergy Hamburg,Hamburg Messe,"September 22-25, 2026",End-to-End LED Wall Rental & Setup,,0.00,19676.25,19676.25,0.00
+26-160702,Follow up sent,260043,Automechanika Frankfurt,Messe Frankfurt,"September 8-12, 2026",End-to-End LED Wall Rental & Setup 13.5m2 Total+Audio,,693.00,5562.00,6255.00,0.00
+26-220701-V2,Follow up sent,260018,SBC LISBON,MEO ARENA,"Sep 29 - Oct 1, 2026",End-to-End LED Wall an Displays Rental & Setup,,1285.00,11565.00,12850.00,0.00
+26-220702,Follow up sent,260044,Rehacare 2026,Dusseldorf Messe,"Sep 23-26, 2026",End-to-End LED Wall Rental & Setup 12m2 Flat,,0.00,5455.00,5455.00,0.00
+26-270702-V3,Waiting,250012,CPHI 2026 Milano,Fiera Milano,"October 6-8, 2026",End-to-End LED Wall and Displays Rental & Setup,,823.75,17000.00,17823.75,0.00
+26-280702,Declined,260028,IFA BERLIN 2026,Messe Berlin,"September 4-8, 2026",End-to-End LED Wall and Displays Rental & Setup,,0.00,3560.00,3560.00,0.00
+26-070802,Declined,260045,South India Celebration Festival,Berlin,"August 22-23, 2026",End-to-End LED Wall  Rental & Setup,,0.00,9080.00,9080.00,0.00
+26-070803,Waiting,260046,Aluminium Global Exhibition,Messe Dusseldorf,"October 6-8, 2026",End-to-End LED Wall Rental & Setup,,3258.00,13032.00,16290.00,0.00
+26-070802-V2,Declined,260045,South India Celebration Festival,Berlin,"August 22-23, 2026",End-to-End LED Wall  Rental & Setup,,4540.00,4540.00,9080.00,0.00
+26-170802,Waiting,250026,NFL Event,Munich Allianz Arena,"November 9-15, 2026",End-to-End LED Wall Rental & Setup 84m2 Total Flat,08/2026,0.00,40640.00,40640.00,0.00
+26-180802,Waiting,260033,Intertabac 2026,Messe Dortmund,"September 15 to 17, 2026",End-to-End LED Wall and Audio Rental & Setup,08/2026,0.00,3040.00,3040.00,0.00
+26-200802,Waiting,260047,Circular Tech Awards Gala Dinner,JW Mariott Berlin,"September 5, 2026",End-to-End LED Wall Rental & Setup 35m2 Total Flat,08/2026,0.00,9730.00,9730.00,0.00
+26-200803,Waiting,260048,WindEnergy Hamburg,Hamburg Messe,"September 22-25, 2026",End-to-End LED Wall Rental & Setup,08/2026,0.00,2780.00,2780.00,0.00
+26-200802-V2,Waiting,260047,Circular Tech Awards Gala Dinner,JW Mariott Berlin,5-Sep-26,"End-to-End LED Wall Rental & Setup 28m2 Total Flat",09/2026,0,7000.00,7000.00,
+26-200802-V3,Waiting,260047,Circular Tech Awards Gala Dinner,JW Mariott Berlin,5-Sep-26,"End-to-End LED Wall and Audio Rental & Setup 28m2 Total Flat + Audio System",09/2026,0,10200.00,10200.00,
+26-260802,Approved,260049,Glasstec - 2026,Messe Dusseldorf,"October 20-23, 2026",Display Rental,09/2026,0,450.00,450.00,
+26-310802,Waiting,260050,Silmo Paris 2026,PARIS NORD VILLEPINTE,"Sep 25 - 28, 2026","End-to-End LED Wall Rental & Setup 3m2 Total Flat",09/2026,0,2740.00,2740.00,
+26-310803,Declined,260051,MSPO 2026,Targi Kielce Exhibition Center,"Sep 8 - 11, 2026","End-to-End LED Wall Rental & Setup 47.5m2 Total Flat&Corner",09/2026,0,21717.50,21717.50,
+26-270702-V4,Approved,250012,CPHI 2026 Milano,Fiera Milano,"October 6-8, 2026","End-to-End LED Wall and Displays Rental & Setup",09/2026,0,16000.00,16000.00,
