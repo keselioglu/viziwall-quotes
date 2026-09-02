@@ -85,8 +85,13 @@ export interface QuotationListItem {
   quote_number: string;
   status: QuoteStatus;
   event_name: string | null;
+  event_venue: string | null;
+  event_start_date: string | null;
+  event_end_date: string | null;
+  event_dates_text: string | null;
   created_at: string;
   customer: Customer;
+  total: string;
 }
 
 export interface QuotationInput {

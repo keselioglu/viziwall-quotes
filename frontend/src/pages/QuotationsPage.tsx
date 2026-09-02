@@ -19,6 +19,14 @@ const statusColors: Record<string, string> = {
   archived: "status-archived",
 };
 
+function formatEventDates(q: { event_dates_text: string | null; event_start_date: string | null; event_end_date: string | null }) {
+  if (q.event_dates_text) return q.event_dates_text;
+  if (!q.event_start_date) return "—";
+  const start = new Date(q.event_start_date).toLocaleDateString();
+  if (!q.event_end_date || q.event_end_date === q.event_start_date) return start;
+  return `${start} – ${new Date(q.event_end_date).toLocaleDateString()}`;
+}
+
 const statusLabels: Record<string, string> = {
   draft: "Draft",
   sent: "Sent",
@@ -117,7 +125,10 @@ export default function QuotationsPage() {
               <th>Quote #</th>
               <th>Customer</th>
               <th>Event</th>
+              <th>Venue</th>
+              <th>Event Dates</th>
               <th>Status</th>
+              <th>Total</th>
               <th>Created</th>
               <th></th>
             </tr>
@@ -128,7 +139,10 @@ export default function QuotationsPage() {
                 <td>{q.quote_number}</td>
                 <td>{q.customer.company_name}</td>
                 <td>{q.event_name || "—"}</td>
+                <td>{q.event_venue || "—"}</td>
+                <td>{formatEventDates(q)}</td>
                 <td><span className={`status-badge ${statusColors[q.status]}`}>{statusLabels[q.status]}</span></td>
+                <td className="num-cell">{Number(q.total).toFixed(2)}</td>
                 <td>{new Date(q.created_at).toLocaleDateString()}</td>
                 <td className="row-actions">
                   <Link to={`/quotations/${q.id}`}><button>Open</button></Link>
@@ -156,7 +170,7 @@ export default function QuotationsPage() {
               </tr>
             ))}
             {quotations.length === 0 && (
-              <tr><td colSpan={6} className="empty-row">No quotations yet.</td></tr>
+              <tr><td colSpan={9} className="empty-row">No quotations yet.</td></tr>
             )}
           </tbody>
         </table>

@@ -185,5 +185,22 @@ class QuotationListOut(BaseModel):
     quote_number: str
     status: QuoteStatus
     event_name: Optional[str] = None
+    event_venue: Optional[str] = None
+    event_start_date: Optional[date] = None
+    event_end_date: Optional[date] = None
+    event_dates_text: Optional[str] = None
+    currency: str
+    tax_rate_percent: Decimal
+    historical_total_amount: Optional[Decimal] = None
     created_at: datetime
     customer: CustomerOut
+    line_items: list[QuoteLineItemOut] = []
+
+    @computed_field
+    @property
+    def total(self) -> Decimal:
+        subtotal = sum((li.line_total for li in self.line_items), Decimal("0"))
+        if not self.line_items and self.historical_total_amount is not None:
+            return self.historical_total_amount
+        tax_amount = subtotal * (self.tax_rate_percent / Decimal("100"))
+        return subtotal + tax_amount
