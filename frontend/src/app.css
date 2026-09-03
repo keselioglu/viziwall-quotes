@@ -278,6 +278,15 @@ button.danger:hover {
   border-bottom: none;
 }
 
+.past-event-row {
+  background: #fafafa;
+  color: #999;
+}
+
+.past-event-row td {
+  color: #999;
+}
+
 .row-actions {
   display: flex;
   gap: 8px;

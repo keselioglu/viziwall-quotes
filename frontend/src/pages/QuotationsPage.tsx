@@ -34,6 +34,12 @@ const statusLabels: Record<string, string> = {
 
 const STATUS_OPTIONS = Object.keys(statusLabels) as QuoteStatus[];
 
+function isPastEvent(q: { event_start_date: string | null }) {
+  if (!q.event_start_date) return false;
+  const todayIso = new Date().toISOString().slice(0, 10);
+  return q.event_start_date < todayIso;
+}
+
 function formatEventDates(q: { event_dates_text: string | null; event_start_date: string | null; event_end_date: string | null }) {
   if (q.event_dates_text) return q.event_dates_text;
   if (!q.event_start_date) return "—";
@@ -123,8 +129,19 @@ export default function QuotationsPage() {
   }, [quotations]);
 
   const eventOptions = useMemo(() => {
-    const names = new Set((quotations ?? []).map((q) => q.event_name).filter(Boolean) as string[]);
-    return Array.from(names).sort();
+    const latestDateByName = new Map<string, string>();
+    for (const q of quotations ?? []) {
+      if (!q.event_name) continue;
+      const current = latestDateByName.get(q.event_name);
+      if (q.event_start_date && (!current || q.event_start_date > current)) {
+        latestDateByName.set(q.event_name, q.event_start_date);
+      } else if (!latestDateByName.has(q.event_name)) {
+        latestDateByName.set(q.event_name, "");
+      }
+    }
+    return Array.from(latestDateByName.entries())
+      .sort((a, b) => b[1].localeCompare(a[1]))
+      .map(([name]) => name);
   }, [quotations]);
 
   const filteredQuotations = useMemo(() => {
@@ -259,7 +276,7 @@ export default function QuotationsPage() {
           </thead>
           <tbody>
             {filteredQuotations.map((q) => (
-              <tr key={q.id}>
+              <tr key={q.id} className={isPastEvent(q) ? "past-event-row" : ""}>
                 <td>{q.quote_number}</td>
                 <td>{q.customer.company_name}</td>
                 <td>{q.event_name || "—"}</td>

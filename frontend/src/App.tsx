@@ -5,6 +5,7 @@ import RequireAuth from "./auth/RequireAuth";
 import Layout from "./components/Layout";
 import LoginPage from "./pages/LoginPage";
 import CustomersPage from "./pages/CustomersPage";
+import EventsPage from "./pages/EventsPage";
 import ProductsPage from "./pages/ProductsPage";
 import QuotationsPage from "./pages/QuotationsPage";
 import QuotationEditorPage from "./pages/QuotationEditorPage";
@@ -31,6 +32,7 @@ export default function App() {
               <Route path="/quotations/new" element={<QuotationEditorPage />} />
               <Route path="/quotations/:id" element={<QuotationEditorPage />} />
               <Route path="/schedule" element={<SchedulePage />} />
+              <Route path="/events" element={<EventsPage />} />
               <Route path="/customers" element={<CustomersPage />} />
               <Route path="/products" element={<ProductsPage />} />
             </Route>

@@ -50,6 +50,11 @@ export const getEvents = () => api.get<Event[]>("/events").then((r) => r.data);
 export const createEvent = (input: EventInput) =>
   api.post<Event>("/events", input).then((r) => r.data);
 
+export const updateEvent = (id: string, input: Partial<EventInput>) =>
+  api.put<Event>(`/events/${id}`, input).then((r) => r.data);
+
+export const deleteEvent = (id: string) => api.delete(`/events/${id}`);
+
 // --- Quotations ---
 
 export const getQuotations = (includeArchived = false) =>

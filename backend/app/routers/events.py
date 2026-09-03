@@ -11,7 +11,7 @@ router = APIRouter(prefix="/events", tags=["events"], dependencies=[Depends(get_
 
 @router.get("", response_model=list[EventOut])
 def list_events(db: Session = Depends(get_db)):
-    return db.query(Event).order_by(Event.name).all()
+    return db.query(Event).order_by(Event.default_start_date.desc().nullslast(), Event.name).all()
 
 
 @router.post("", response_model=EventOut, status_code=201)
@@ -41,3 +41,12 @@ def update_event(event_id: str, event_in: EventUpdate, db: Session = Depends(get
     db.commit()
     db.refresh(event)
     return event
+
+
+@router.delete("/{event_id}", status_code=204)
+def delete_event(event_id: str, db: Session = Depends(get_db)):
+    event = db.get(Event, event_id)
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+    db.delete(event)
+    db.commit()
