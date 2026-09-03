@@ -221,6 +221,25 @@ button.danger:hover {
   margin-bottom: 0;
 }
 
+.status-filter {
+  position: relative;
+}
+
+.status-filter-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 10;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 180px;
+}
+
 .status-select {
   border: none;
   border-radius: 100px;

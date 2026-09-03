@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -47,9 +47,11 @@ export default function QuotationsPage() {
   const queryClient = useQueryClient();
   const [showArchived, setShowArchived] = useState(false);
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState<Set<QuoteStatus>>(new Set());
+  const [statusMenuOpen, setStatusMenuOpen] = useState(false);
   const [customerFilter, setCustomerFilter] = useState("");
   const [eventFilter, setEventFilter] = useState("");
+  const statusMenuRef = useRef<HTMLDivElement>(null);
 
   const { data: quotations, isLoading, error } = useQuery({
     queryKey: ["quotations", showArchived],
@@ -122,8 +124,8 @@ export default function QuotationsPage() {
 
   const filteredQuotations = useMemo(() => {
     const term = search.trim().toLowerCase();
-    return (quotations ?? []).filter((q) => {
-      if (statusFilter && q.status !== statusFilter) return false;
+    const filtered = (quotations ?? []).filter((q) => {
+      if (statusFilter.size > 0 && !statusFilter.has(q.status)) return false;
       if (customerFilter && q.customer.company_name !== customerFilter) return false;
       if (eventFilter && q.event_name !== eventFilter) return false;
       if (term) {
@@ -132,6 +134,12 @@ export default function QuotationsPage() {
       }
       return true;
     });
+    return [...filtered].sort((a, b) => {
+      if (!a.event_start_date && !b.event_start_date) return 0;
+      if (!a.event_start_date) return 1;
+      if (!b.event_start_date) return -1;
+      return b.event_start_date.localeCompare(a.event_start_date);
+    });
   }, [quotations, search, statusFilter, customerFilter, eventFilter]);
 
   function handleStatusChange(id: string, quoteNumber: string, newStatus: QuoteStatus) {
@@ -139,6 +147,26 @@ export default function QuotationsPage() {
       statusChangeMutation.mutate({ id, status: newStatus });
     }
   }
+
+  function toggleStatusFilter(status: QuoteStatus) {
+    setStatusFilter((prev) => {
+      const next = new Set(prev);
+      if (next.has(status)) next.delete(status);
+      else next.add(status);
+      return next;
+    });
+  }
+
+  useEffect(() => {
+    if (!statusMenuOpen) return;
+    function handleClickOutside(e: MouseEvent) {
+      if (statusMenuRef.current && !statusMenuRef.current.contains(e.target as Node)) {
+        setStatusMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [statusMenuOpen]);
 
   return (
     <div>
@@ -164,12 +192,25 @@ export default function QuotationsPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-          <option value="">All statuses</option>
-          {STATUS_OPTIONS.map((s) => (
-            <option key={s} value={s}>{statusLabels[s]}</option>
-          ))}
-        </select>
+        <div className="status-filter" ref={statusMenuRef}>
+          <button type="button" onClick={() => setStatusMenuOpen((open) => !open)}>
+            {statusFilter.size === 0 ? "All statuses" : `${statusFilter.size} status${statusFilter.size > 1 ? "es" : ""}`}
+          </button>
+          {statusMenuOpen && (
+            <div className="status-filter-menu">
+              {STATUS_OPTIONS.map((s) => (
+                <label key={s} className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={statusFilter.has(s)}
+                    onChange={() => toggleStatusFilter(s)}
+                  />
+                  {statusLabels[s]}
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
         <select value={customerFilter} onChange={(e) => setCustomerFilter(e.target.value)}>
           <option value="">All customers</option>
           {customerOptions.map((name) => (
@@ -182,11 +223,11 @@ export default function QuotationsPage() {
             <option key={name} value={name}>{name}</option>
           ))}
         </select>
-        {(search || statusFilter || customerFilter || eventFilter) && (
+        {(search || statusFilter.size > 0 || customerFilter || eventFilter) && (
           <button
             type="button"
             className="link-button"
-            onClick={() => { setSearch(""); setStatusFilter(""); setCustomerFilter(""); setEventFilter(""); }}
+            onClick={() => { setSearch(""); setStatusFilter(new Set()); setCustomerFilter(""); setEventFilter(""); }}
           >
             Clear filters
           </button>
