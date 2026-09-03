@@ -210,11 +210,7 @@ export default function SchedulePage() {
                           <>
                             <span className="schedule-chip-name">{group.eventName}</span>
                             {group.eventVenue && <span className="schedule-chip-venue">{group.eventVenue}</span>}
-                            {group.quotes.length === 1 ? (
-                              <span className="schedule-chip-summary">{group.quotes[0].quote_number}</span>
-                            ) : (
-                              <span className="schedule-chip-summary">{summary}</span>
-                            )}
+                            <span className="schedule-chip-summary">{summary}</span>
                           </>
                         );
                         return group.quotes.length === 1 ? (
