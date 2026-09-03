@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  createQuotation, getCustomers, getProducts, getQuotation, updateQuotation,
+  createEvent, createQuotation, getCustomers, getEvents, getProducts, getQuotation, updateQuotation,
 } from "../api/endpoints";
 import { api } from "../api/client";
 import type { Product, QuoteLineItemInput, QuoteStatus, QuotationInput } from "../types";
+
+const ADD_NEW_EVENT = "__add_new_event__";
 
 interface DraftLineItem extends QuoteLineItemInput {
   key: string;
@@ -36,8 +38,11 @@ export default function QuotationEditorPage() {
 
   const { data: customers } = useQuery({ queryKey: ["customers"], queryFn: () => getCustomers() });
   const { data: products } = useQuery({ queryKey: ["products"], queryFn: () => getProducts() });
+  const { data: events } = useQuery({ queryKey: ["events"], queryFn: () => getEvents() });
 
   const [customerId, setCustomerId] = useState("");
+  const [eventId, setEventId] = useState("");
+  const [addingEvent, setAddingEvent] = useState(false);
   const [eventName, setEventName] = useState("");
   const [eventVenue, setEventVenue] = useState("");
   const [eventStart, setEventStart] = useState("");
@@ -53,6 +58,11 @@ export default function QuotationEditorPage() {
   useEffect(() => {
     if (!existing) return;
     setCustomerId(existing.customer_id);
+    const matched = events?.find(
+      (ev) => ev.name === existing.event_name && ev.venue === existing.event_venue
+    );
+    setEventId(matched ? matched.id : "");
+    setAddingEvent(!matched && !!existing.event_name);
     setEventName(existing.event_name || "");
     setEventVenue(existing.event_venue || "");
     setEventStart(existing.event_start_date || "");
@@ -67,7 +77,7 @@ export default function QuotationEditorPage() {
         ? existing.line_items.map((li) => ({ ...li, key: li.id }))
         : [newLineItem()]
     );
-  }, [existing]);
+  }, [existing, events]);
 
   const saveMutation = useMutation({
     mutationFn: (input: QuotationInput) =>
@@ -89,6 +99,26 @@ export default function QuotationEditorPage() {
 
   function addItem() {
     setItems((prev) => [...prev, newLineItem()]);
+  }
+
+  function pickEvent(selection: string) {
+    if (selection === ADD_NEW_EVENT) {
+      setEventId("");
+      setAddingEvent(true);
+      setEventName("");
+      setEventVenue("");
+      setEventStart("");
+      setEventEnd("");
+      return;
+    }
+    setAddingEvent(false);
+    setEventId(selection);
+    const event = events?.find((ev) => ev.id === selection);
+    if (!event) return;
+    setEventName(event.name);
+    setEventVenue(event.venue || "");
+    setEventStart(event.default_start_date || "");
+    setEventEnd(event.default_end_date || "");
   }
 
   function pickProduct(key: string, productId: string) {
@@ -114,11 +144,31 @@ export default function QuotationEditorPage() {
     return { subtotal, tax, total: subtotal + tax };
   }
 
-  function handleSave() {
+  async function handleSave() {
     if (!customerId) {
       alert("Please select a customer.");
       return;
     }
+
+    if (addingEvent && eventName.trim()) {
+      const alreadyExists = events?.some(
+        (ev) => ev.name === eventName.trim() && (ev.venue || "") === eventVenue.trim()
+      );
+      if (!alreadyExists) {
+        try {
+          await createEvent({
+            name: eventName.trim(),
+            venue: eventVenue.trim() || null,
+            default_start_date: eventStart || null,
+            default_end_date: eventEnd || null,
+          });
+          queryClient.invalidateQueries({ queryKey: ["events"] });
+        } catch {
+          // Non-fatal — the quote still saves with this event name/venue as free text.
+        }
+      }
+    }
+
     const input: QuotationInput = {
       customer_id: customerId,
       event_name: eventName || null,
@@ -206,8 +256,33 @@ export default function QuotationEditorPage() {
           </select>
         </label>
         <label>
-          Event Name
-          <input value={eventName} onChange={(e) => setEventName(e.target.value)} />
+          Event
+          {addingEvent ? (
+            <div className="inline-field-with-action">
+              <input
+                autoFocus value={eventName}
+                placeholder="New event name..."
+                onChange={(e) => setEventName(e.target.value)}
+              />
+              {events && events.length > 0 && (
+                <button
+                  type="button"
+                  className="link-button"
+                  onClick={() => pickEvent(events[0].id)}
+                >
+                  Choose existing
+                </button>
+              )}
+            </div>
+          ) : (
+            <select value={eventId} onChange={(e) => pickEvent(e.target.value)}>
+              <option value="">Select an event...</option>
+              {events?.map((ev) => (
+                <option key={ev.id} value={ev.id}>{ev.name}{ev.venue ? ` — ${ev.venue}` : ""}</option>
+              ))}
+              <option value={ADD_NEW_EVENT}>+ Add new event...</option>
+            </select>
+          )}
         </label>
         <label>
           Venue

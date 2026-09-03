@@ -1,6 +1,7 @@
 import { api } from "./client";
 import type {
-  Customer, CustomerInput, Product, ProductInput, Quotation, QuotationInput, QuotationListItem,
+  Customer, CustomerInput, Event, EventInput, Product, ProductInput, Quotation, QuotationInput,
+  QuotationListItem,
 } from "../types";
 
 export async function login(email: string, password: string): Promise<string> {
@@ -41,6 +42,13 @@ export const updateProduct = (id: string, input: Partial<ProductInput>) =>
   api.put<Product>(`/products/${id}`, input).then((r) => r.data);
 
 export const deleteProduct = (id: string) => api.delete(`/products/${id}`);
+
+// --- Events ---
+
+export const getEvents = () => api.get<Event[]>("/events").then((r) => r.data);
+
+export const createEvent = (input: EventInput) =>
+  api.post<Event>("/events", input).then((r) => r.data);
 
 // --- Quotations ---
 

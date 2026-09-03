@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import auth_router, customers, products, quotations
+from app.routers import auth_router, customers, events, products, quotations
 
 app = FastAPI(title="Viziwall Quotes API")
 
@@ -15,6 +15,7 @@ app.add_middleware(
 
 app.include_router(auth_router.router)
 app.include_router(customers.router)
+app.include_router(events.router)
 app.include_router(products.router)
 app.include_router(quotations.router)
 

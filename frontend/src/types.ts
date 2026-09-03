@@ -41,6 +41,18 @@ export interface Product {
 
 export type ProductInput = Omit<Product, "id" | "created_at" | "updated_at">;
 
+export interface Event {
+  id: string;
+  name: string;
+  venue: string | null;
+  default_start_date: string | null;
+  default_end_date: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export type EventInput = Omit<Event, "id" | "created_at" | "updated_at">;
+
 export interface QuoteLineItem {
   id: string;
   product_id: string | null;

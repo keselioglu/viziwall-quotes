@@ -80,6 +80,19 @@ class Product(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
 
+class Event(Base):
+    __tablename__ = "events"
+
+    id = Column(String(36), primary_key=True, default=gen_uuid)
+    name = Column(String, nullable=False)
+    venue = Column(String, nullable=True)
+    default_start_date = Column(Date, nullable=True)
+    default_end_date = Column(Date, nullable=True)
+
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+
+
 class Quotation(Base):
     __tablename__ = "quotations"
 

@@ -87,6 +87,33 @@ class ProductOut(ProductBase):
     updated_at: datetime
 
 
+# --- Event ---
+
+class EventBase(BaseModel):
+    name: str
+    venue: Optional[str] = None
+    default_start_date: Optional[date] = None
+    default_end_date: Optional[date] = None
+
+
+class EventCreate(EventBase):
+    pass
+
+
+class EventUpdate(BaseModel):
+    name: Optional[str] = None
+    venue: Optional[str] = None
+    default_start_date: Optional[date] = None
+    default_end_date: Optional[date] = None
+
+
+class EventOut(EventBase):
+    model_config = ConfigDict(from_attributes=True)
+    id: str
+    created_at: datetime
+    updated_at: datetime
+
+
 # --- Quote line items ---
 
 class QuoteLineItemBase(BaseModel):
