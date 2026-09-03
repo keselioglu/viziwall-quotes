@@ -96,6 +96,8 @@ export default function QuotationsPage() {
         discount_amount: source.discount_amount ? Number(source.discount_amount) : null,
         historical_total_amount: null,
         quotation_date_text: null,
+        contact_name: source.contact_name,
+        contact_email: source.contact_email,
         line_items: source.line_items.map((li, idx) => ({
           product_id: li.product_id,
           description: li.description,

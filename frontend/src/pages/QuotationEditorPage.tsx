@@ -63,6 +63,8 @@ export default function QuotationEditorPage() {
   const [taxRate, setTaxRate] = useState("0");
   const [advancePayment, setAdvancePayment] = useState(isNew ? "50" : "");
   const [discountAmount, setDiscountAmount] = useState("");
+  const [contactName, setContactName] = useState(isNew ? "Tugberk Keselioglu" : "");
+  const [contactEmail, setContactEmail] = useState(isNew ? "tugberk@viziwall.com" : "");
   const [notes, setNotes] = useState("");
   const [validUntil, setValidUntil] = useState("");
   const [items, setItems] = useState<DraftLineItem[]>([newLineItem("led_wall")]);
@@ -88,6 +90,8 @@ export default function QuotationEditorPage() {
     setTaxRate(existing.tax_rate_percent);
     setAdvancePayment(existing.advance_payment_percent ?? "");
     setDiscountAmount(existing.discount_amount ?? "");
+    setContactName(existing.contact_name ?? "Tugberk Keselioglu");
+    setContactEmail(existing.contact_email ?? "tugberk@viziwall.com");
     setNotes(existing.notes || "");
     setValidUntil(existing.valid_until || "");
     setItems(
@@ -108,7 +112,8 @@ export default function QuotationEditorPage() {
     setDirty(true);
   }, [
     customerId, eventId, addingEvent, eventName, eventVenue, eventStart, eventEnd,
-    status, currency, taxRate, advancePayment, discountAmount, notes, validUntil, items,
+    status, currency, taxRate, advancePayment, discountAmount, contactName, contactEmail,
+    notes, validUntil, items,
   ]);
 
   useEffect(() => {
@@ -241,6 +246,8 @@ export default function QuotationEditorPage() {
       discount_amount: discountAmount.trim() ? parseFloat(discountAmount) : null,
       historical_total_amount: existing?.historical_total_amount ? Number(existing.historical_total_amount) : null,
       quotation_date_text: existing?.quotation_date_text ?? null,
+      contact_name: contactName.trim() || null,
+      contact_email: contactEmail.trim() || null,
       line_items: items
         .filter((it) => it.description.trim() || it.product_id || parseFloat(it.unit_price) !== 0)
         .map((it, idx) => ({
@@ -392,6 +399,14 @@ export default function QuotationEditorPage() {
         <label>
           Valid Until
           <input type="date" value={validUntil} onChange={(e) => setValidUntil(e.target.value)} />
+        </label>
+        <label>
+          Contact Name
+          <input value={contactName} onChange={(e) => setContactName(e.target.value)} />
+        </label>
+        <label>
+          Contact Email
+          <input type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} />
         </label>
       </div>
 

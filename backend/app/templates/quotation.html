@@ -48,6 +48,13 @@
     .supplier-row .label { width: 140px; flex-shrink: 0; color: #666; }
     .supplier hr { border: none; border-top: 1px solid #ccc; margin: 14px 0; }
     .supplier .advance-line { margin-top: 14px; font-weight: 700; }
+    .spec-section { margin-top: 32px; }
+    .spec-section h2 { font-size: 15pt; color: #1a3a5c; margin: 0 0 12px; }
+    .spec-table { font-size: 9pt; }
+    .spec-table td { padding: 6px 10px; border: 1px solid #ccc; }
+    .spec-table tr:nth-child(even) { background: #f2f2f2; }
+    .spec-table .spec-group td { font-weight: 700; background: #fff; }
+    .spec-table .spec-label { width: 45%; }
 </style>
 </head>
 <body>
@@ -195,9 +202,9 @@
 <div class="contact-block">
     <div>For any questions regarding this quote, please contact:</div>
     <br>
-    {% if quotation.created_by %}
-    <div>{{ quotation.created_by.name }}</div>
-    <div>{{ quotation.created_by.email }}</div>
+    {% if quotation.contact_name or quotation.contact_email %}
+    {% if quotation.contact_name %}<div>{{ quotation.contact_name }}</div>{% endif %}
+    {% if quotation.contact_email %}<div>{{ quotation.contact_email }}</div>{% endif %}
     {% else %}
     <div>{{ company_name }}</div>
     {% if company_email %}<div>{{ company_email }}</div>{% endif %}
@@ -291,6 +298,67 @@
     <div class="advance-line">Advance Payment To Be Transferred before {{ quotation.valid_until.strftime('%d %b %Y') }}: {{ '%.2f'|format(quotation.advance_payment_amount) }} {{ quotation.currency }}</div>
     {% endif %}
 </div>
+
+{% if has_26mm_product %}
+<div class="spec-section">
+    <h2>Technical Specifications of P2.604 Indoor LED Panels</h2>
+    <table class="spec-table">
+        <tr class="spec-group"><td colspan="2">P2.604-INDOOR</td></tr>
+        <tr><td class="spec-label">Pixel Pitch</td><td>P2.604 mm</td></tr>
+        <tr><td class="spec-label">LED Type</td><td>SMD2121</td></tr>
+        <tr><td class="spec-label">Pixel Density</td><td>147,456 dots/m&sup2;</td></tr>
+        <tr><td class="spec-label">Brightness</td><td>1200 nits</td></tr>
+        <tr><td class="spec-label">IP Rating</td><td>IP45</td></tr>
+        <tr><td class="spec-label">Scan Mode</td><td>24 scan</td></tr>
+        <tr class="spec-group"><td colspan="2">Module:</td></tr>
+        <tr><td class="spec-label">Module Size</td><td>250 &times; 250 mm</td></tr>
+        <tr><td class="spec-label">Module Resolution</td><td>96 &times; 96 pixels</td></tr>
+        <tr><td class="spec-label">Module Weight</td><td>0.5 kg</td></tr>
+        <tr class="spec-group"><td colspan="2">Cabinet:</td></tr>
+        <tr><td class="spec-label">Cabinet Size</td><td>500 &times; 500 &times; 85 mm</td></tr>
+        <tr><td class="spec-label">Cabinet Resolution</td><td>192 &times; 192 pixels</td></tr>
+        <tr><td class="spec-label">Cabinet Weight</td><td>7.5 kg</td></tr>
+        <tr><td class="spec-label">Cabinet Material</td><td>Die-casting aluminum</td></tr>
+        <tr class="spec-group"><td colspan="2">Electrical:</td></tr>
+        <tr><td class="spec-label">Max Power</td><td>500 W/m&sup2;</td></tr>
+        <tr><td class="spec-label">Average Power</td><td>160 W/m&sup2;</td></tr>
+        <tr><td class="spec-label">Input Voltage</td><td>AC 100&ndash;240 V</td></tr>
+        <tr class="spec-group"><td colspan="2">Performance:</td></tr>
+        <tr><td class="spec-label">Viewing Angle Horizontal</td><td>160&deg; (+70&deg; / -70&deg;)</td></tr>
+        <tr><td class="spec-label">Viewing Angle Vertical</td><td>160&deg; (+70&deg; / -70&deg;)</td></tr>
+        <tr><td class="spec-label">Gray Scale</td><td>16 bit (256 levels)</td></tr>
+        <tr><td class="spec-label">Control Mode</td><td>Synchronous / Asynchronous</td></tr>
+        <tr><td class="spec-label">Inputs</td><td>AV, S-Video, VGA, DVI, YPbPr, HDMI, SDI</td></tr>
+        <tr><td class="spec-label">Humidity</td><td>10% &ndash; 90%</td></tr>
+    </table>
+</div>
+{% endif %}
+
+{% if has_19mm_product %}
+<div class="spec-section">
+    <h2>Technical Specifications of P1.9 Indoor Wall Mounted LED Panels</h2>
+    <table class="spec-table">
+        <tr><td class="spec-label">Pixel Pitch (mm)</td><td>P1.95</td></tr>
+        <tr><td class="spec-label">Model</td><td>P1.95</td></tr>
+        <tr><td class="spec-label">Pixel Configuration</td><td>SMD1515</td></tr>
+        <tr><td class="spec-label">Density (Pixels/m&sup2;)</td><td>262,144</td></tr>
+        <tr><td class="spec-label">Module Resolution (Pixel)</td><td>128&times;128</td></tr>
+        <tr><td class="spec-label">Module Size (mm)</td><td>250&times;250</td></tr>
+        <tr><td class="spec-label">Cabinet Size (mm)</td><td>500x1000</td></tr>
+        <tr><td class="spec-label">Cabinet Weight (KG)</td><td>5.8</td></tr>
+        <tr><td class="spec-label">Brightness (CD/m&sup2;)</td><td>800</td></tr>
+        <tr><td class="spec-label">Viewing Angle (&deg;)</td><td>140</td></tr>
+        <tr><td class="spec-label">Gray Grade (Bits)</td><td>14/16 Optional</td></tr>
+        <tr><td class="spec-label">Operation Power</td><td>AC90-264V,47-63Hz</td></tr>
+        <tr><td class="spec-label">Max. Power Consumption (W/m&sup2;)</td><td>650</td></tr>
+        <tr><td class="spec-label">Avg. Power Consumption (W/m&sup2;)</td><td>100-200</td></tr>
+        <tr><td class="spec-label">Frame Frequency (Hz)</td><td>50/60</td></tr>
+        <tr><td class="spec-label">Refresh Frequency (Hz)</td><td>3840</td></tr>
+        <tr><td class="spec-label">Working Temperature (&deg;C)</td><td>-20&sim;+60</td></tr>
+        <tr><td class="spec-label">Protection Grade</td><td>IP31</td></tr>
+    </table>
+</div>
+{% endif %}
 
 <div class="footer">
     {{ company_name }}{% if company_email %} &middot; {{ company_email }}{% endif %}

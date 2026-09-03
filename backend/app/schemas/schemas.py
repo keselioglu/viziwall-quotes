@@ -159,6 +159,8 @@ class QuotationBase(BaseModel):
     discount_amount: Optional[Decimal] = None
     historical_total_amount: Optional[Decimal] = None
     quotation_date_text: Optional[str] = None
+    contact_name: Optional[str] = None
+    contact_email: Optional[str] = None
 
 
 class QuotationCreate(QuotationBase):
@@ -183,6 +185,8 @@ class QuotationUpdate(BaseModel):
     discount_amount: Optional[Decimal] = None
     historical_total_amount: Optional[Decimal] = None
     quotation_date_text: Optional[str] = None
+    contact_name: Optional[str] = None
+    contact_email: Optional[str] = None
     line_items: Optional[list[QuoteLineItemCreate]] = None
 
 

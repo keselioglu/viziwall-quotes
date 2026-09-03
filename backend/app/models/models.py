@@ -114,6 +114,11 @@ class Quotation(Base):
     notes = Column(Text, nullable=True)
     valid_until = Column(Date, nullable=True)
 
+    # Contact shown on the quotation document ("For any questions... please contact").
+    # Independent of created_by/the logged-in user — editable per quote.
+    contact_name = Column(String, nullable=True)
+    contact_email = Column(String, nullable=True)
+
     # Header-level fields for quotes imported from historical records that don't have a
     # structured line-item breakdown — a single service description and a known total/discount.
     # Quotes created in-app instead compute their total from line_items (see QuotationOut.total).

@@ -85,6 +85,8 @@ export interface Quotation {
   discount_amount: string | null;
   historical_total_amount: string | null;
   quotation_date_text: string | null;
+  contact_name: string | null;
+  contact_email: string | null;
   created_at: string;
   updated_at: string;
   line_items: QuoteLineItem[];
@@ -126,5 +128,7 @@ export interface QuotationInput {
   discount_amount: number | null;
   historical_total_amount: number | null;
   quotation_date_text: string | null;
+  contact_name: string | null;
+  contact_email: string | null;
   line_items: QuoteLineItemInput[];
 }
