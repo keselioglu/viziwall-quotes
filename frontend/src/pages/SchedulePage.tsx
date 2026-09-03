@@ -156,7 +156,7 @@ export default function SchedulePage() {
   }, [scheduled]);
 
   const today = new Date();
-  const months = [0, 1, 2].map((offset) => {
+  const months = Array.from({ length: 9 }, (_, offset) => {
     const d = new Date(today.getFullYear(), today.getMonth() + offset, 1);
     return { year: d.getFullYear(), month: d.getMonth() };
   });
