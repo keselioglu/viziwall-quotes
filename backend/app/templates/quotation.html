@@ -96,7 +96,8 @@
     <table>
         <thead>
             <tr>
-                <th style="width: 48%;">Description</th>
+                <th style="width: 26%;">Product</th>
+                <th style="width: 32%;">Description</th>
                 <th class="num">Qty</th>
                 <th class="num">Unit Price</th>
                 <th class="num">Total</th>
@@ -105,8 +106,9 @@
         <tbody>
             {% for item in grouped[category] %}
             <tr>
+                <td>{{ item.product.name if item.product else '—' }}</td>
                 <td>{{ item.description }}</td>
-                <td class="num">{{ item.quantity }}</td>
+                <td class="num">{{ item.quantity }}{% if item.product %} {{ item.product.unit }}{% endif %}</td>
                 <td class="num">{{ '%.2f'|format(item.unit_price) }} {{ quotation.currency }}</td>
                 <td class="num">{{ '%.2f'|format(item.line_total) }} {{ quotation.currency }}</td>
             </tr>
