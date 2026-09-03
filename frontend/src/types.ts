@@ -61,9 +61,10 @@ export interface QuoteLineItem {
   unit_price: string;
   sort_order: number;
   line_total: string;
+  product_type: ProductType | null;
 }
 
-export type QuoteLineItemInput = Omit<QuoteLineItem, "id" | "line_total">;
+export type QuoteLineItemInput = Omit<QuoteLineItem, "id" | "line_total" | "product_type">;
 
 export interface Quotation {
   id: string;

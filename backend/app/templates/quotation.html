@@ -19,6 +19,8 @@
     th { text-align: left; font-size: 8.5pt; text-transform: uppercase; letter-spacing: 0.4px; color: #666; border-bottom: 2px solid #111; padding: 8px 6px; }
     td { padding: 10px 6px; border-bottom: 1px solid #e5e5e5; vertical-align: top; }
     .num { text-align: right; white-space: nowrap; }
+    .category-title { font-size: 9pt; text-transform: uppercase; letter-spacing: 0.4px; color: #888; margin: 18px 0 4px; }
+    .category-title:first-of-type { margin-top: 0; }
     .totals { width: 320px; margin-left: auto; margin-top: 16px; }
     .totals table { margin: 0; }
     .totals td { border: none; padding: 4px 6px; }
@@ -41,7 +43,7 @@
     <div class="quote-meta">
         <h2>QUOTATION</h2>
         <div><strong>{{ quotation.quote_number }}</strong></div>
-        <div>Date: {{ quotation.created_at.strftime('%d %b %Y') }}</div>
+        <div>Issue Date: {{ quotation.created_at.strftime('%d %b %Y') }}</div>
         {% if quotation.valid_until %}<div>Valid until: {{ quotation.valid_until.strftime('%d %b %Y') }}</div>{% endif %}
     </div>
 </div>
@@ -74,26 +76,45 @@
     {% endif %}
 </div>
 
-<table>
-    <thead>
-        <tr>
-            <th style="width: 48%;">Description</th>
-            <th class="num">Qty</th>
-            <th class="num">Unit Price</th>
-            <th class="num">Total</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in quotation.line_items %}
-        <tr>
-            <td>{{ item.description }}</td>
-            <td class="num">{{ item.quantity }}</td>
-            <td class="num">{{ '%.2f'|format(item.unit_price) }} {{ quotation.currency }}</td>
-            <td class="num">{{ '%.2f'|format(item.line_total) }} {{ quotation.currency }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+{% set category_labels = {
+    'led_wall': 'LED Wall Panels & Accessories',
+    'displays': 'TVs & Touch Screen Displays',
+    'audio': 'Audio',
+    'it_equipment': 'Laptops & Tablets',
+    'services': 'Services',
+    'none': 'Other',
+} %}
+{% set category_order = ['led_wall', 'displays', 'audio', 'it_equipment', 'services', 'none'] %}
+{% set items_by_category = quotation.line_items | groupby('product_type') %}
+{% set grouped = {} %}
+{% for key, group_items in items_by_category %}
+    {% set _ = grouped.update({ (key or 'none'): group_items }) %}
+{% endfor %}
+{% for category in category_order %}
+    {% if category in grouped %}
+    <div class="category-title">{{ category_labels[category] }}</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 48%;">Description</th>
+                <th class="num">Qty</th>
+                <th class="num">Unit Price</th>
+                <th class="num">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in grouped[category] %}
+            <tr>
+                <td>{{ item.description }}</td>
+                <td class="num">{{ item.quantity }}</td>
+                <td class="num">{{ '%.2f'|format(item.unit_price) }} {{ quotation.currency }}</td>
+                <td class="num">{{ '%.2f'|format(item.line_total) }} {{ quotation.currency }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+{% endfor %}
 
 <div class="totals">
     <table>
@@ -101,6 +122,12 @@
             <td>Subtotal</td>
             <td class="num">{{ '%.2f'|format(quotation.subtotal) }} {{ quotation.currency }}</td>
         </tr>
+        {% if quotation.discount_amount %}
+        <tr>
+            <td>Discount</td>
+            <td class="num">-{{ '%.2f'|format(quotation.discount_amount) }} {{ quotation.currency }}</td>
+        </tr>
+        {% endif %}
         {% if quotation.tax_rate_percent > 0 %}
         <tr>
             <td>Tax ({{ quotation.tax_rate_percent }}%)</td>
@@ -111,12 +138,6 @@
             <td>Total</td>
             <td class="num">{{ '%.2f'|format(quotation.total) }} {{ quotation.currency }}</td>
         </tr>
-        {% if quotation.advance_payment_percent %}
-        <tr>
-            <td>Advance Payment ({{ quotation.advance_payment_percent }}%)</td>
-            <td class="num">{{ '%.2f'|format(quotation.advance_payment_amount) }} {{ quotation.currency }}</td>
-        </tr>
-        {% endif %}
     </table>
 </div>
 

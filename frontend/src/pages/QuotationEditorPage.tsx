@@ -62,6 +62,7 @@ export default function QuotationEditorPage() {
   const [currency, setCurrency] = useState("EUR");
   const [taxRate, setTaxRate] = useState("0");
   const [advancePayment, setAdvancePayment] = useState(isNew ? "50" : "");
+  const [discountAmount, setDiscountAmount] = useState("");
   const [notes, setNotes] = useState("");
   const [validUntil, setValidUntil] = useState("");
   const [items, setItems] = useState<DraftLineItem[]>([newLineItem("led_wall")]);
@@ -86,6 +87,7 @@ export default function QuotationEditorPage() {
     setCurrency(existing.currency);
     setTaxRate(existing.tax_rate_percent);
     setAdvancePayment(existing.advance_payment_percent ?? "");
+    setDiscountAmount(existing.discount_amount ?? "");
     setNotes(existing.notes || "");
     setValidUntil(existing.valid_until || "");
     setItems(
@@ -106,7 +108,7 @@ export default function QuotationEditorPage() {
     setDirty(true);
   }, [
     customerId, eventId, addingEvent, eventName, eventVenue, eventStart, eventEnd,
-    status, currency, taxRate, advancePayment, notes, validUntil, items,
+    status, currency, taxRate, advancePayment, discountAmount, notes, validUntil, items,
   ]);
 
   useEffect(() => {
@@ -189,10 +191,12 @@ export default function QuotationEditorPage() {
       const price = parseFloat(it.unit_price) || 0;
       return sum + qty * price;
     }, 0);
-    const tax = subtotal * ((parseFloat(taxRate) || 0) / 100);
-    const total = subtotal + tax;
+    const discount = parseFloat(discountAmount) || 0;
+    const discountedSubtotal = subtotal - discount;
+    const tax = discountedSubtotal * ((parseFloat(taxRate) || 0) / 100);
+    const total = discountedSubtotal + tax;
     const advance = advancePayment ? total * (parseFloat(advancePayment) / 100) : null;
-    return { subtotal, tax, total, advance };
+    return { subtotal, discount, tax, total, advance };
   }
 
   async function buildInput(): Promise<QuotationInput | null> {
@@ -234,7 +238,7 @@ export default function QuotationEditorPage() {
       notes: notes || null,
       valid_until: validUntil || null,
       service_description: existing?.service_description ?? null,
-      discount_amount: existing?.discount_amount ? Number(existing.discount_amount) : null,
+      discount_amount: discountAmount.trim() ? parseFloat(discountAmount) : null,
       historical_total_amount: existing?.historical_total_amount ? Number(existing.historical_total_amount) : null,
       quotation_date_text: existing?.quotation_date_text ?? null,
       line_items: items
@@ -271,7 +275,7 @@ export default function QuotationEditorPage() {
     }
   }
 
-  const { subtotal, tax, total, advance } = computeTotals();
+  const { subtotal, discount, tax, total, advance } = computeTotals();
 
   return (
     <div>
@@ -377,6 +381,15 @@ export default function QuotationEditorPage() {
           />
         </label>
         <label>
+          Discount ({currency})
+          <input
+            type="number" step="0.01" min="0"
+            placeholder="0.00"
+            value={discountAmount}
+            onChange={(e) => setDiscountAmount(e.target.value)}
+          />
+        </label>
+        <label>
           Valid Until
           <input type="date" value={validUntil} onChange={(e) => setValidUntil(e.target.value)} />
         </label>
@@ -460,6 +473,9 @@ export default function QuotationEditorPage() {
 
       <div className="quote-totals">
         <div><span>Subtotal</span><span>{subtotal.toFixed(2)} {currency}</span></div>
+        {discount > 0 && (
+          <div><span>Discount</span><span>-{discount.toFixed(2)} {currency}</span></div>
+        )}
         <div><span>Tax ({taxRate || 0}%)</span><span>{tax.toFixed(2)} {currency}</span></div>
         <div className="total-line"><span>Total</span><span>{total.toFixed(2)} {currency}</span></div>
         {advance !== null && (

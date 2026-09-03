@@ -132,6 +132,12 @@ class QuoteLineItemOut(QuoteLineItemBase):
     model_config = ConfigDict(from_attributes=True)
     id: str
     line_total: Decimal
+    product: Optional[ProductOut] = None
+
+    @computed_field
+    @property
+    def product_type(self) -> Optional[ProductType]:
+        return self.product.product_type if self.product else None
 
 
 # --- Quotation ---
@@ -197,7 +203,8 @@ class QuotationOut(QuotationBase):
     @computed_field
     @property
     def tax_amount(self) -> Decimal:
-        return self.subtotal * (self.tax_rate_percent / Decimal("100"))
+        discounted = self.subtotal - (self.discount_amount or Decimal("0"))
+        return discounted * (self.tax_rate_percent / Decimal("100"))
 
     @computed_field
     @property
@@ -205,7 +212,8 @@ class QuotationOut(QuotationBase):
         # Historical/imported quotes have no line items — fall back to the recorded total.
         if not self.line_items and self.historical_total_amount is not None:
             return self.historical_total_amount
-        return self.subtotal + self.tax_amount
+        discounted = self.subtotal - (self.discount_amount or Decimal("0"))
+        return discounted + self.tax_amount
 
     @computed_field
     @property
