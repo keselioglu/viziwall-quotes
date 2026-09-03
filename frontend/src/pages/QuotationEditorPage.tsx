@@ -185,13 +185,15 @@ export default function QuotationEditorPage() {
       discount_amount: existing?.discount_amount ? Number(existing.discount_amount) : null,
       historical_total_amount: existing?.historical_total_amount ? Number(existing.historical_total_amount) : null,
       quotation_date_text: existing?.quotation_date_text ?? null,
-      line_items: items.map((it, idx) => ({
-        product_id: it.product_id,
-        description: it.description,
-        quantity: it.quantity,
-        unit_price: it.unit_price,
-        sort_order: idx,
-      })),
+      line_items: items
+        .filter((it) => it.description.trim() || it.product_id || parseFloat(it.unit_price) !== 0)
+        .map((it, idx) => ({
+          product_id: it.product_id,
+          description: it.description,
+          quantity: it.quantity,
+          unit_price: it.unit_price,
+          sort_order: idx,
+        })),
     };
     saveMutation.mutate(input);
   }
