@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  archiveQuotation, createQuotation, getQuotation, getQuotations, restoreQuotation,
+  archiveQuotation, createQuotation, getQuotation, getQuotations, restoreQuotation, updateQuotation,
 } from "../api/endpoints";
-import type { QuotationInput } from "../types";
+import type { QuotationInput, QuoteStatus } from "../types";
 
 const statusColors: Record<string, string> = {
   draft: "status-draft",
@@ -19,14 +19,6 @@ const statusColors: Record<string, string> = {
   archived: "status-archived",
 };
 
-function formatEventDates(q: { event_dates_text: string | null; event_start_date: string | null; event_end_date: string | null }) {
-  if (q.event_dates_text) return q.event_dates_text;
-  if (!q.event_start_date) return "—";
-  const start = new Date(q.event_start_date).toLocaleDateString();
-  if (!q.event_end_date || q.event_end_date === q.event_start_date) return start;
-  return `${start} – ${new Date(q.event_end_date).toLocaleDateString()}`;
-}
-
 const statusLabels: Record<string, string> = {
   draft: "Draft",
   sent: "Sent",
@@ -40,10 +32,24 @@ const statusLabels: Record<string, string> = {
   archived: "Archived",
 };
 
+const STATUS_OPTIONS = Object.keys(statusLabels) as QuoteStatus[];
+
+function formatEventDates(q: { event_dates_text: string | null; event_start_date: string | null; event_end_date: string | null }) {
+  if (q.event_dates_text) return q.event_dates_text;
+  if (!q.event_start_date) return "—";
+  const start = new Date(q.event_start_date).toLocaleDateString();
+  if (!q.event_end_date || q.event_end_date === q.event_start_date) return start;
+  return `${start} – ${new Date(q.event_end_date).toLocaleDateString()}`;
+}
+
 export default function QuotationsPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [showArchived, setShowArchived] = useState(false);
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [customerFilter, setCustomerFilter] = useState("");
+  const [eventFilter, setEventFilter] = useState("");
 
   const { data: quotations, isLoading, error } = useQuery({
     queryKey: ["quotations", showArchived],
@@ -60,6 +66,12 @@ export default function QuotationsPage() {
     mutationFn: (id: string) => restoreQuotation(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["quotations"] }),
     onError: () => alert("Failed to restore quotation."),
+  });
+
+  const statusChangeMutation = useMutation({
+    mutationFn: ({ id, status }: { id: string; status: QuoteStatus }) => updateQuotation(id, { status }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["quotations"] }),
+    onError: () => alert("Failed to update status."),
   });
 
   const duplicateMutation = useMutation({
@@ -98,6 +110,36 @@ export default function QuotationsPage() {
     onError: () => alert("Failed to duplicate quotation."),
   });
 
+  const customerOptions = useMemo(() => {
+    const names = new Set((quotations ?? []).map((q) => q.customer.company_name).filter(Boolean) as string[]);
+    return Array.from(names).sort();
+  }, [quotations]);
+
+  const eventOptions = useMemo(() => {
+    const names = new Set((quotations ?? []).map((q) => q.event_name).filter(Boolean) as string[]);
+    return Array.from(names).sort();
+  }, [quotations]);
+
+  const filteredQuotations = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    return (quotations ?? []).filter((q) => {
+      if (statusFilter && q.status !== statusFilter) return false;
+      if (customerFilter && q.customer.company_name !== customerFilter) return false;
+      if (eventFilter && q.event_name !== eventFilter) return false;
+      if (term) {
+        const haystack = `${q.quote_number} ${q.customer.company_name ?? ""} ${q.event_name ?? ""}`.toLowerCase();
+        if (!haystack.includes(term)) return false;
+      }
+      return true;
+    });
+  }, [quotations, search, statusFilter, customerFilter, eventFilter]);
+
+  function handleStatusChange(id: string, quoteNumber: string, newStatus: QuoteStatus) {
+    if (confirm(`Change status of ${quoteNumber} to "${statusLabels[newStatus]}"?`)) {
+      statusChangeMutation.mutate({ id, status: newStatus });
+    }
+  }
+
   return (
     <div>
       <div className="page-header">
@@ -113,6 +155,42 @@ export default function QuotationsPage() {
           </label>
           <Link to="/quotations/new"><button>+ New Quotation</button></Link>
         </div>
+      </div>
+
+      <div className="filter-bar">
+        <input
+          className="search-box"
+          placeholder="Search quote #, customer, or event..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+          <option value="">All statuses</option>
+          {STATUS_OPTIONS.map((s) => (
+            <option key={s} value={s}>{statusLabels[s]}</option>
+          ))}
+        </select>
+        <select value={customerFilter} onChange={(e) => setCustomerFilter(e.target.value)}>
+          <option value="">All customers</option>
+          {customerOptions.map((name) => (
+            <option key={name} value={name}>{name}</option>
+          ))}
+        </select>
+        <select value={eventFilter} onChange={(e) => setEventFilter(e.target.value)}>
+          <option value="">All events</option>
+          {eventOptions.map((name) => (
+            <option key={name} value={name}>{name}</option>
+          ))}
+        </select>
+        {(search || statusFilter || customerFilter || eventFilter) && (
+          <button
+            type="button"
+            className="link-button"
+            onClick={() => { setSearch(""); setStatusFilter(""); setCustomerFilter(""); setEventFilter(""); }}
+          >
+            Clear filters
+          </button>
+        )}
       </div>
 
       {isLoading && <p>Loading...</p>}
@@ -134,14 +212,25 @@ export default function QuotationsPage() {
             </tr>
           </thead>
           <tbody>
-            {quotations.map((q) => (
+            {filteredQuotations.map((q) => (
               <tr key={q.id}>
                 <td>{q.quote_number}</td>
                 <td>{q.customer.company_name}</td>
                 <td>{q.event_name || "—"}</td>
                 <td>{q.event_venue || "—"}</td>
                 <td>{formatEventDates(q)}</td>
-                <td><span className={`status-badge ${statusColors[q.status]}`}>{statusLabels[q.status]}</span></td>
+                <td>
+                  <select
+                    className={`status-select ${statusColors[q.status]}`}
+                    value={q.status}
+                    disabled={statusChangeMutation.isPending}
+                    onChange={(e) => handleStatusChange(q.id, q.quote_number, e.target.value as QuoteStatus)}
+                  >
+                    {STATUS_OPTIONS.map((s) => (
+                      <option key={s} value={s}>{statusLabels[s]}</option>
+                    ))}
+                  </select>
+                </td>
                 <td className="num-cell">{Number(q.total).toFixed(2)}</td>
                 <td>{new Date(q.created_at).toLocaleDateString()}</td>
                 <td className="row-actions">
@@ -169,8 +258,8 @@ export default function QuotationsPage() {
                 </td>
               </tr>
             ))}
-            {quotations.length === 0 && (
-              <tr><td colSpan={9} className="empty-row">No quotations yet.</td></tr>
+            {filteredQuotations.length === 0 && (
+              <tr><td colSpan={9} className="empty-row">No quotations match these filters.</td></tr>
             )}
           </tbody>
         </table>
