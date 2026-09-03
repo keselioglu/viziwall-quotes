@@ -42,7 +42,7 @@ const BUCKET_LABELS: Record<DisplayBucket, string> = {
 };
 
 const BUCKET_COLORS: Record<DisplayBucket, string> = {
-  active: "status-waiting",
+  active: "status-sent",
   approved: "status-accepted",
   sent: "status-sent",
   draft: "status-draft",
