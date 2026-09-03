@@ -1,0 +1,15 @@
+**/.env
+**/.env.*
+!**/.env.example
+backend/dev.db
+backend/*.log
+backend/**/__pycache__/
+backend/**/*.pyc
+backend/.venv/
+backend/scripts/data/
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/*.log
+.git/
+.gitignore
