@@ -75,6 +75,7 @@ export interface Quotation {
   event_start_date: string | null;
   event_end_date: string | null;
   event_dates_text: string | null;
+  installation_days: number;
   status: QuoteStatus;
   currency: string;
   tax_rate_percent: string;
@@ -118,6 +119,7 @@ export interface QuotationInput {
   event_start_date: string | null;
   event_end_date: string | null;
   event_dates_text: string | null;
+  installation_days: number;
   status: QuoteStatus;
   currency: string;
   tax_rate_percent: number;

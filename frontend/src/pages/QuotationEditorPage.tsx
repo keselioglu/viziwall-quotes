@@ -58,6 +58,7 @@ export default function QuotationEditorPage() {
   const [eventVenue, setEventVenue] = useState("");
   const [eventStart, setEventStart] = useState("");
   const [eventEnd, setEventEnd] = useState("");
+  const [installationDays, setInstallationDays] = useState("2");
   const [status, setStatus] = useState<QuoteStatus>("draft");
   const [currency, setCurrency] = useState("EUR");
   const [taxRate, setTaxRate] = useState("0");
@@ -112,7 +113,7 @@ export default function QuotationEditorPage() {
     setDirty(true);
   }, [
     customerId, eventId, addingEvent, eventName, eventVenue, eventStart, eventEnd,
-    status, currency, taxRate, advancePayment, discountAmount, contactName, contactEmail,
+    installationDays, status, currency, taxRate, advancePayment, discountAmount, contactName, contactEmail,
     notes, validUntil, items,
   ]);
 
@@ -236,6 +237,7 @@ export default function QuotationEditorPage() {
       event_start_date: eventStart || null,
       event_end_date: eventEnd || null,
       event_dates_text: existing?.event_dates_text ?? null,
+      installation_days: parseInt(installationDays, 10) || 2,
       status,
       currency,
       tax_rate_percent: parseFloat(taxRate) || 0,
@@ -365,6 +367,14 @@ export default function QuotationEditorPage() {
         <label>
           Event End
           <input type="date" value={eventEnd} onChange={(e) => setEventEnd(e.target.value)} />
+        </label>
+        <label>
+          Installation Days
+          <input
+            type="number" step="1" min="0"
+            value={installationDays}
+            onChange={(e) => setInstallationDays(e.target.value)}
+          />
         </label>
         <label>
           Currency

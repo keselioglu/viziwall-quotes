@@ -106,6 +106,7 @@ class Quotation(Base):
     event_start_date = Column(Date, nullable=True)
     event_end_date = Column(Date, nullable=True)
     event_dates_text = Column(String, nullable=True)  # free-text fallback, e.g. "3 Day Event-Dates TBD"
+    installation_days = Column(Integer, default=2, nullable=False)  # used in the auto-generated service description's rental period
 
     status = Column(Enum(QuoteStatus), default=QuoteStatus.draft, nullable=False)
     currency = Column(String, default="EUR", nullable=False)

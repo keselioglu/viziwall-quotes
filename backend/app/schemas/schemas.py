@@ -149,6 +149,7 @@ class QuotationBase(BaseModel):
     event_start_date: Optional[date] = None
     event_end_date: Optional[date] = None
     event_dates_text: Optional[str] = None
+    installation_days: int = 2
     status: QuoteStatus = QuoteStatus.draft
     currency: str = "EUR"
     tax_rate_percent: Decimal = Decimal("0")
@@ -175,6 +176,7 @@ class QuotationUpdate(BaseModel):
     event_start_date: Optional[date] = None
     event_end_date: Optional[date] = None
     event_dates_text: Optional[str] = None
+    installation_days: Optional[int] = None
     status: Optional[QuoteStatus] = None
     currency: Optional[str] = None
     tax_rate_percent: Optional[Decimal] = None
@@ -233,6 +235,21 @@ class QuotationOut(QuotationBase):
         if self.valid_until is None or self.event_start_date is None:
             return None
         return (self.event_start_date - self.valid_until).days
+
+    @computed_field
+    @property
+    def event_duration_days(self) -> Optional[int]:
+        if self.event_start_date is None:
+            return None
+        end = self.event_end_date or self.event_start_date
+        return (end - self.event_start_date).days + 1
+
+    @computed_field
+    @property
+    def rental_period_days(self) -> Optional[int]:
+        if self.event_duration_days is None:
+            return None
+        return self.installation_days + self.event_duration_days
 
     @computed_field
     @property

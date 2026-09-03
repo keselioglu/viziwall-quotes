@@ -7,6 +7,31 @@ from app.config import settings
 TEMPLATES_DIR = Path(__file__).parent / "templates"
 _env = Environment(loader=FileSystemLoader(str(TEMPLATES_DIR)))
 
+# Category short names for the auto-generated service description headline,
+# in display order. "services" is deliberately excluded — it's not rented equipment.
+CATEGORY_SHORT_NAMES = {
+    "led_wall": "LED Wall",
+    "displays": "Displays",
+    "audio": "Audio",
+    "it_equipment": "Equipment",
+}
+
+
+def _service_description_headline(quotation) -> str | None:
+    present_types = {
+        li.product_type for li in quotation.line_items if li.product_type is not None
+    }
+    short_names = [
+        label for key, label in CATEGORY_SHORT_NAMES.items() if key in present_types
+    ]
+    if not short_names:
+        return None
+    if len(short_names) == 1:
+        joined = short_names[0]
+    else:
+        joined = ", ".join(short_names[:-1]) + " & " + short_names[-1]
+    return f"End-to-End {joined} Rental and Setup"
+
 
 def render_quotation_html(quotation) -> str:
     template = _env.get_template("quotation.html")
@@ -23,6 +48,7 @@ def render_quotation_html(quotation) -> str:
         company_address=settings.company_address,
         has_26mm_product=has_26mm,
         has_19mm_product=has_19mm,
+        service_description_headline=_service_description_headline(quotation),
     )
 
 

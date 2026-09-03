@@ -55,6 +55,10 @@
     .spec-table tr:nth-child(even) { background: #f2f2f2; }
     .spec-table .spec-group td { font-weight: 700; background: #fff; }
     .spec-table .spec-label { width: 45%; }
+    .service-description { margin-bottom: 24px; }
+    .service-description h3 { font-size: 9pt; text-transform: uppercase; letter-spacing: 0.5px; color: #888; margin-bottom: 6px; }
+    .service-description p { margin: 0 0 4px; }
+    .service-description .rental-note { font-size: 9pt; color: #555; }
 </style>
 </head>
 <body>
@@ -102,6 +106,16 @@
     </div>
     {% endif %}
 </div>
+
+{% if service_description_headline %}
+<div class="service-description">
+    <h3>Service Description</h3>
+    <p>{{ service_description_headline }}</p>
+    {% if quotation.rental_period_days %}
+    <p class="rental-note">*{{ quotation.rental_period_days }} day{{ 's' if quotation.rental_period_days != 1 else '' }} rental period including installation ({{ quotation.installation_days }} day{{ 's' if quotation.installation_days != 1 else '' }} installation time + event duration)</p>
+    {% endif %}
+</div>
+{% endif %}
 
 {% set category_labels = {
     'led_wall': 'LED Wall Panels & Accessories',

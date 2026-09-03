@@ -86,6 +86,7 @@ export default function QuotationsPage() {
         event_start_date: source.event_start_date,
         event_end_date: source.event_end_date,
         event_dates_text: source.event_dates_text,
+        installation_days: source.installation_days,
         status: "draft",
         currency: source.currency,
         tax_rate_percent: Number(source.tax_rate_percent),
