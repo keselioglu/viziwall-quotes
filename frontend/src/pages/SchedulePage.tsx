@@ -94,6 +94,16 @@ export default function SchedulePage() {
     [quotations]
   );
 
+  const summaryCounts = useMemo(() => {
+    let active = 0;
+    let approved = 0;
+    for (const q of quotations ?? []) {
+      if (q.status === "waiting" || q.status === "follow_up_sent") active++;
+      else if (q.status === "approved") approved++;
+    }
+    return { active, approved };
+  }, [quotations]);
+
   const { scheduled, unscheduled } = useMemo(() => {
     const scheduled: QuotationListItem[] = [];
     const unscheduled: QuotationListItem[] = [];
@@ -129,6 +139,17 @@ export default function SchedulePage() {
     <div>
       <div className="page-header">
         <h1>Schedule</h1>
+      </div>
+
+      <div className="schedule-summary">
+        <div className="schedule-summary-stat">
+          <span className="schedule-summary-dot status-waiting" />
+          Active <strong>{summaryCounts.active}</strong>
+        </div>
+        <div className="schedule-summary-stat">
+          <span className="schedule-summary-dot status-accepted" />
+          Approved <strong>{summaryCounts.approved}</strong>
+        </div>
       </div>
 
       {isLoading && <p>Loading...</p>}
