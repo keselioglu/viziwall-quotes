@@ -14,6 +14,7 @@ def render_quotation_html(quotation) -> str:
         quotation=quotation,
         company_name=settings.company_name,
         company_email=settings.company_email,
+        company_phone=settings.company_phone,
         company_address=settings.company_address,
     )
 

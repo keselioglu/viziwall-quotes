@@ -13,7 +13,11 @@ router = APIRouter(prefix="/quotations", tags=["quotations"], dependencies=[Depe
 
 
 def _with_relations(query):
-    return query.options(joinedload(Quotation.customer), joinedload(Quotation.line_items))
+    return query.options(
+        joinedload(Quotation.customer),
+        joinedload(Quotation.created_by),
+        joinedload(Quotation.line_items).joinedload(QuoteLineItem.product),
+    )
 
 
 @router.get("", response_model=list[QuotationListOut])

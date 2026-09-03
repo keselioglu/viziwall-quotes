@@ -28,6 +28,13 @@
     .notes { margin-top: 32px; font-size: 9.5pt; color: #444; }
     .notes h3 { font-size: 9pt; text-transform: uppercase; letter-spacing: 0.5px; color: #888; margin-bottom: 6px; }
     .footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid #ddd; font-size: 8pt; color: #999; text-align: center; }
+    .payment-info { border: 1.5px solid #111; padding: 12px 14px; margin-top: 18px; font-size: 9.5pt; line-height: 1.6; }
+    .signature-block { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 40px; }
+    .signature-line { width: 260px; }
+    .signature-line .field { border-bottom: 1px solid #999; color: #bbb; padding-bottom: 4px; margin-bottom: 22px; font-size: 9.5pt; }
+    .contact-block { margin-top: 24px; font-size: 9.5pt; line-height: 1.6; }
+    .thank-you { text-align: center; font-weight: 700; font-size: 12pt; margin-top: 32px; }
+    .doc-footer { text-align: center; border-top: 1px solid #111; margin-top: 16px; padding-top: 10px; font-size: 9pt; }
     .terms { page-break-before: always; font-size: 9pt; color: #333; line-height: 1.5; }
     .terms h2 { font-size: 13pt; margin: 0 0 4px; }
     .terms .terms-subtitle { font-size: 9.5pt; color: #666; margin-bottom: 20px; }
@@ -157,6 +164,47 @@
     <p>{{ quotation.notes }}</p>
 </div>
 {% endif %}
+
+<div class="payment-info">
+    {% if quotation.validity_days is not none %}
+    <div>Validity: This quote is valid for {{ quotation.validity_days }} day{{ 's' if quotation.validity_days != 1 else '' }} from the date of issue.</div>
+    {% endif %}
+    {% if quotation.advance_payment_percent %}
+    <div>Payment Schedule: {{ quotation.advance_payment_percent|round(0, 'floor')|int }}% advance payment due upon contract signing{% if quotation.days_to_event is not none %}, {{ quotation.days_to_event }} day{{ 's' if quotation.days_to_event != 1 else '' }} prior to the event start{% endif %}; remaining {{ (100 - quotation.advance_payment_percent)|round(0, 'floor')|int }}% payable with the completion of setup.</div>
+    {% endif %}
+    <div>Currency &amp; Method: Payments to be made via bank transfer in {{ quotation.currency }}.</div>
+    <div>Changes: Any changes to the agreed scope, quantities, or event schedule may affect pricing.</div>
+    <div>Cancellation: In case of cancellation by the client, the advance payment is non-refundable.</div>
+    <div>%{{ quotation.tax_rate_percent|round(0, 'floor')|int }} VAT included in the price</div>
+</div>
+
+<div class="signature-block">
+    <div>Please confirm your acceptance of this quote by signing this document</div>
+    <div class="signature-line">
+        <div class="field">Signature</div>
+        <div class="field">Print Name</div>
+        <div class="field">Date</div>
+    </div>
+</div>
+
+<div class="contact-block">
+    <div>For any questions regarding this quote, please contact:</div>
+    <br>
+    {% if quotation.created_by %}
+    <div>{{ quotation.created_by.name }}</div>
+    <div>{{ quotation.created_by.email }}</div>
+    {% else %}
+    <div>{{ company_name }}</div>
+    {% if company_email %}<div>{{ company_email }}</div>{% endif %}
+    {% endif %}
+</div>
+
+<div class="thank-you">We appreciate the opportunity to work with you.</div>
+
+<div class="doc-footer">
+    <div>{{ company_name }}</div>
+    <div>{% if company_phone %}{{ company_phone }} {% endif %}{% if company_email %}{{ company_email }}{% endif %}</div>
+</div>
 
 <div class="terms">
     <h2>Viziwall &ndash; LED Screen General Rental Terms &amp; Conditions</h2>

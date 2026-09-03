@@ -194,6 +194,7 @@ class QuotationOut(QuotationBase):
     updated_at: datetime
     line_items: list[QuoteLineItemOut] = []
     customer: CustomerOut
+    created_by: Optional[UserOut] = None
 
     @computed_field
     @property
@@ -214,6 +215,20 @@ class QuotationOut(QuotationBase):
             return self.historical_total_amount
         discounted = self.subtotal - (self.discount_amount or Decimal("0"))
         return discounted + self.tax_amount
+
+    @computed_field
+    @property
+    def validity_days(self) -> Optional[int]:
+        if self.valid_until is None:
+            return None
+        return (self.valid_until - self.created_at.date()).days
+
+    @computed_field
+    @property
+    def days_to_event(self) -> Optional[int]:
+        if self.valid_until is None or self.event_start_date is None:
+            return None
+        return (self.event_start_date - self.valid_until).days
 
     @computed_field
     @property

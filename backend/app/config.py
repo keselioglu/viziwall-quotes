@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 480
     company_name: str = "Viziwall"
     company_email: str = ""
+    company_phone: str = ""
     company_address: str = ""
     company_logo_path: str = ""
 
