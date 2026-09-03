@@ -4,6 +4,7 @@ import { AuthProvider } from "./auth/AuthContext";
 import RequireAuth from "./auth/RequireAuth";
 import Layout from "./components/Layout";
 import LoginPage from "./pages/LoginPage";
+import ArchivePage from "./pages/ArchivePage";
 import CustomersPage from "./pages/CustomersPage";
 import EventsPage from "./pages/EventsPage";
 import ProductsPage from "./pages/ProductsPage";
@@ -33,6 +34,7 @@ export default function App() {
               <Route path="/quotations/:id" element={<QuotationEditorPage />} />
               <Route path="/schedule" element={<SchedulePage />} />
               <Route path="/events" element={<EventsPage />} />
+              <Route path="/archive" element={<ArchivePage />} />
               <Route path="/customers" element={<CustomersPage />} />
               <Route path="/products" element={<ProductsPage />} />
             </Route>

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  archiveQuotation, createQuotation, getQuotation, getQuotations, restoreQuotation, updateQuotation,
+  archiveQuotation, createQuotation, getQuotation, getQuotations, updateQuotation,
 } from "../api/endpoints";
 import type { QuotationInput, QuoteStatus } from "../types";
 
@@ -32,7 +32,7 @@ const statusLabels: Record<string, string> = {
   archived: "Archived",
 };
 
-const STATUS_OPTIONS = Object.keys(statusLabels) as QuoteStatus[];
+const STATUS_OPTIONS = (Object.keys(statusLabels) as QuoteStatus[]).filter((s) => s !== "archived");
 
 function isPastEvent(q: { event_start_date: string | null }) {
   if (!q.event_start_date) return false;
@@ -51,7 +51,6 @@ function formatEventDates(q: { event_dates_text: string | null; event_start_date
 export default function QuotationsPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [showArchived, setShowArchived] = useState(false);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<Set<QuoteStatus>>(new Set());
   const [statusMenuOpen, setStatusMenuOpen] = useState(false);
@@ -60,20 +59,14 @@ export default function QuotationsPage() {
   const statusMenuRef = useRef<HTMLDivElement>(null);
 
   const { data: quotations, isLoading, error } = useQuery({
-    queryKey: ["quotations", showArchived],
-    queryFn: () => getQuotations(showArchived),
+    queryKey: ["quotations", false],
+    queryFn: () => getQuotations(false),
   });
 
   const archiveMutation = useMutation({
     mutationFn: (id: string) => archiveQuotation(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["quotations"] }),
     onError: () => alert("Failed to archive quotation."),
-  });
-
-  const restoreMutation = useMutation({
-    mutationFn: (id: string) => restoreQuotation(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["quotations"] }),
-    onError: () => alert("Failed to restore quotation."),
   });
 
   const statusChangeMutation = useMutation({
@@ -195,14 +188,6 @@ export default function QuotationsPage() {
       <div className="page-header">
         <h1>Quotations</h1>
         <div className="header-actions">
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              checked={showArchived}
-              onChange={(e) => setShowArchived(e.target.checked)}
-            />
-            Show archived
-          </label>
           <Link to="/quotations/new"><button>+ New Quotation</button></Link>
         </div>
       </div>
@@ -304,20 +289,14 @@ export default function QuotationsPage() {
                   >
                     Duplicate
                   </button>
-                  {q.status === "archived" ? (
-                    <button onClick={() => restoreMutation.mutate(q.id)} disabled={restoreMutation.isPending}>
-                      Restore
-                    </button>
-                  ) : (
-                    <button
-                      className="danger"
-                      onClick={() => {
-                        if (confirm(`Archive quotation ${q.quote_number}?`)) archiveMutation.mutate(q.id);
-                      }}
-                    >
-                      Archive
-                    </button>
-                  )}
+                  <button
+                    className="danger"
+                    onClick={() => {
+                      if (confirm(`Archive quotation ${q.quote_number}?`)) archiveMutation.mutate(q.id);
+                    }}
+                  >
+                    Archive
+                  </button>
                 </td>
               </tr>
             ))}

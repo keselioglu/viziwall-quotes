@@ -11,6 +11,7 @@ export default function Layout() {
         <NavLink to="/" end>Quotations</NavLink>
         <NavLink to="/schedule">Schedule</NavLink>
         <NavLink to="/events">Events</NavLink>
+        <NavLink to="/archive">Archive</NavLink>
         <NavLink to="/customers">Customers</NavLink>
         <NavLink to="/products">Products</NavLink>
         <button className="logout-btn" onClick={logout}>Log out</button>
