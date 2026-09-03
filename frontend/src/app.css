@@ -542,6 +542,23 @@ button.danger:hover {
   flex: 1;
 }
 
+.line-items-category {
+  margin-bottom: 20px;
+}
+
+.line-items-category-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin: 0 0 8px;
+}
+
+.line-items-category .line-items-table {
+  margin-bottom: 8px;
+}
+
 .line-items-table {
   table-layout: fixed;
 }

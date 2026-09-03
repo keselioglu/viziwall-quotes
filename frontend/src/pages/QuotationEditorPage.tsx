@@ -5,15 +5,24 @@ import {
   createEvent, createQuotation, getCustomers, getEvents, getProducts, getQuotation, updateQuotation,
 } from "../api/endpoints";
 import { api } from "../api/client";
-import type { Product, QuoteLineItemInput, QuoteStatus, QuotationInput } from "../types";
+import type { Product, ProductType, QuoteLineItemInput, QuoteStatus, QuotationInput } from "../types";
 
 const ADD_NEW_EVENT = "__add_new_event__";
 
+const CATEGORIES: { type: ProductType; label: string }[] = [
+  { type: "led_wall", label: "LED Wall Panels & Accessories" },
+  { type: "displays", label: "TVs & Touch Screen Displays" },
+  { type: "audio", label: "Audio" },
+  { type: "it_equipment", label: "Laptops & Tablets" },
+  { type: "services", label: "Services" },
+];
+
 interface DraftLineItem extends QuoteLineItemInput {
   key: string;
+  category: ProductType;
 }
 
-function newLineItem(): DraftLineItem {
+function newLineItem(category: ProductType): DraftLineItem {
   return {
     key: crypto.randomUUID(),
     product_id: null,
@@ -21,6 +30,7 @@ function newLineItem(): DraftLineItem {
     quantity: "1",
     unit_price: "0",
     sort_order: 0,
+    category,
   };
 }
 
@@ -52,7 +62,7 @@ export default function QuotationEditorPage() {
   const [taxRate, setTaxRate] = useState("0");
   const [notes, setNotes] = useState("");
   const [validUntil, setValidUntil] = useState("");
-  const [items, setItems] = useState<DraftLineItem[]>([newLineItem()]);
+  const [items, setItems] = useState<DraftLineItem[]>([newLineItem("led_wall")]);
   const [pdfError, setPdfError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -74,10 +84,14 @@ export default function QuotationEditorPage() {
     setValidUntil(existing.valid_until || "");
     setItems(
       existing.line_items.length
-        ? existing.line_items.map((li) => ({ ...li, key: li.id }))
-        : [newLineItem()]
+        ? existing.line_items.map((li) => ({
+            ...li,
+            key: li.id,
+            category: products?.find((p) => p.id === li.product_id)?.product_type ?? "led_wall",
+          }))
+        : [newLineItem("led_wall")]
     );
-  }, [existing, events]);
+  }, [existing, events, products]);
 
   const saveMutation = useMutation({
     mutationFn: (input: QuotationInput) =>
@@ -97,8 +111,8 @@ export default function QuotationEditorPage() {
     setItems((prev) => prev.filter((it) => it.key !== key));
   }
 
-  function addItem() {
-    setItems((prev) => [...prev, newLineItem()]);
+  function addItem(category: ProductType) {
+    setItems((prev) => [...prev, newLineItem(category)]);
   }
 
   function pickEvent(selection: string) {
@@ -317,69 +331,80 @@ export default function QuotationEditorPage() {
       </div>
 
       <h2 className="section-title">Line Items</h2>
-      <table className="data-table line-items-table">
-        <thead>
-          <tr>
-            <th>Product</th>
-            <th>Description</th>
-            <th>Qty</th>
-            <th>Unit Price</th>
-            <th>Line Total</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((item) => {
-            const qty = parseFloat(item.quantity) || 0;
-            const price = parseFloat(item.unit_price) || 0;
-            const lineTotal = qty * price;
-            const unit = products?.find((p) => p.id === item.product_id)?.unit;
-            return (
-              <tr key={item.key}>
-                <td className="col-product">
-                  <select
-                    value={item.product_id || ""}
-                    onChange={(e) => pickProduct(item.key, e.target.value)}
-                  >
-                    <option value="">Custom line item</option>
-                    {products?.map((p: Product) => (
-                      <option key={p.id} value={p.id}>{p.name}</option>
-                    ))}
-                  </select>
-                </td>
-                <td className="col-description">
-                  <input
-                    value={item.description}
-                    onChange={(e) => updateItem(item.key, { description: e.target.value })}
-                  />
-                </td>
-                <td>
-                  <div className="qty-with-unit">
-                    <input
-                      type="number" step="0.01" className="num-input"
-                      value={item.quantity}
-                      onChange={(e) => updateItem(item.key, { quantity: e.target.value })}
-                    />
-                    {unit && <span className="unit-label">{unit}</span>}
-                  </div>
-                </td>
-                <td>
-                  <input
-                    type="number" step="0.01" className="num-input"
-                    value={item.unit_price}
-                    onChange={(e) => updateItem(item.key, { unit_price: e.target.value })}
-                  />
-                </td>
-                <td className="num-cell">{lineTotal.toFixed(2)} {currency}</td>
-                <td>
-                  <button className="danger" onClick={() => removeItem(item.key)}>×</button>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-      <button onClick={addItem}>+ Add Line Item</button>
+      {CATEGORIES.map(({ type: category, label }) => {
+        const categoryItems = items.filter((it) => it.category === category);
+        const categoryProducts = products?.filter((p) => p.product_type === category) ?? [];
+        return (
+          <div key={category} className="line-items-category">
+            <h3 className="line-items-category-title">{label}</h3>
+            {categoryItems.length > 0 && (
+              <table className="data-table line-items-table">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Description</th>
+                    <th>Qty</th>
+                    <th>Unit Price</th>
+                    <th>Line Total</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {categoryItems.map((item) => {
+                    const qty = parseFloat(item.quantity) || 0;
+                    const price = parseFloat(item.unit_price) || 0;
+                    const lineTotal = qty * price;
+                    const unit = products?.find((p) => p.id === item.product_id)?.unit;
+                    return (
+                      <tr key={item.key}>
+                        <td className="col-product">
+                          <select
+                            value={item.product_id || ""}
+                            onChange={(e) => pickProduct(item.key, e.target.value)}
+                          >
+                            <option value="">Custom line item</option>
+                            {categoryProducts.map((p: Product) => (
+                              <option key={p.id} value={p.id}>{p.name}</option>
+                            ))}
+                          </select>
+                        </td>
+                        <td className="col-description">
+                          <input
+                            value={item.description}
+                            onChange={(e) => updateItem(item.key, { description: e.target.value })}
+                          />
+                        </td>
+                        <td>
+                          <div className="qty-with-unit">
+                            <input
+                              type="number" step="0.01" className="num-input"
+                              value={item.quantity}
+                              onChange={(e) => updateItem(item.key, { quantity: e.target.value })}
+                            />
+                            {unit && <span className="unit-label">{unit}</span>}
+                          </div>
+                        </td>
+                        <td>
+                          <input
+                            type="number" step="0.01" className="num-input"
+                            value={item.unit_price}
+                            onChange={(e) => updateItem(item.key, { unit_price: e.target.value })}
+                          />
+                        </td>
+                        <td className="num-cell">{lineTotal.toFixed(2)} {currency}</td>
+                        <td>
+                          <button className="danger" onClick={() => removeItem(item.key)}>×</button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            )}
+            <button onClick={() => addItem(category)}>+ Add {label} Item</button>
+          </div>
+        );
+      })}
 
       <div className="quote-totals">
         <div><span>Subtotal</span><span>{subtotal.toFixed(2)} {currency}</span></div>
