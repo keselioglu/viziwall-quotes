@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session, joinedload
 from app.auth import get_current_user
 from app.database import get_db
 from app.models import Quotation, QuoteLineItem, QuoteStatus, User
-from app.pdf import render_quotation_pdf
+from app.pdf import render_quotation_html, render_quotation_pdf
 from app.quote_numbering import generate_quote_number
 from app.schemas.schemas import QuotationCreate, QuotationListOut, QuotationOut, QuotationUpdate
 
@@ -110,3 +110,14 @@ def get_quotation_pdf(quotation_id: str, db: Session = Depends(get_db)):
         media_type="application/pdf",
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
+
+
+@router.get("/{quotation_id}/view")
+def view_quotation(quotation_id: str, db: Session = Depends(get_db)):
+    quotation = _with_relations(db.query(Quotation)).filter(Quotation.id == quotation_id).first()
+    if not quotation:
+        raise HTTPException(status_code=404, detail="Quotation not found")
+
+    quotation_out = QuotationOut.model_validate(quotation)
+    html_content = render_quotation_html(quotation_out)
+    return Response(content=html_content, media_type="text/html")

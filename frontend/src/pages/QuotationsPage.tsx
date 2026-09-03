@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   archiveQuotation, createQuotation, getQuotation, getQuotations, updateQuotation,
 } from "../api/endpoints";
+import { openQuotationView } from "../viewQuotation";
 import type { QuotationInput, QuoteStatus } from "../types";
 
 const statusColors: Record<string, string> = {
@@ -283,6 +284,13 @@ export default function QuotationsPage() {
                 <td>{new Date(q.created_at).toLocaleDateString()}</td>
                 <td className="row-actions">
                   <Link to={`/quotations/${q.id}`}><button>Open</button></Link>
+                  <button
+                    onClick={() => {
+                      openQuotationView(q.id).catch(() => alert("Could not open the quotation preview."));
+                    }}
+                  >
+                    View
+                  </button>
                   <button
                     onClick={() => duplicateMutation.mutate(q.id)}
                     disabled={duplicateMutation.isPending}

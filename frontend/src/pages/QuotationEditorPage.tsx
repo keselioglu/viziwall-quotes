@@ -4,8 +4,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createEvent, createQuotation, getCustomers, getEvents, getProducts, getQuotation, updateQuotation,
 } from "../api/endpoints";
-import { api } from "../api/client";
 import { setNavGuard } from "../navGuard";
+import { openQuotationView } from "../viewQuotation";
 import type { Product, ProductType, QuoteLineItemInput, QuoteStatus, QuotationInput } from "../types";
 
 const ADD_NEW_EVENT = "__add_new_event__";
@@ -64,7 +64,7 @@ export default function QuotationEditorPage() {
   const [notes, setNotes] = useState("");
   const [validUntil, setValidUntil] = useState("");
   const [items, setItems] = useState<DraftLineItem[]>([newLineItem("led_wall")]);
-  const [pdfError, setPdfError] = useState<string | null>(null);
+  const [viewError, setViewError] = useState<string | null>(null);
   const [dirty, setDirty] = useState(false);
   const loadedRef = useRef(isNew);
 
@@ -245,19 +245,13 @@ export default function QuotationEditorPage() {
     saveMutation.mutate(input);
   }
 
-  async function handleDownloadPdf() {
+  async function handleView() {
     if (!id || isNew) return;
-    setPdfError(null);
+    setViewError(null);
     try {
-      const response = await api.get(`/quotations/${id}/pdf`, { responseType: "blob" });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `${existing?.quote_number || "quotation"}.pdf`;
-      link.click();
-      window.URL.revokeObjectURL(url);
+      await openQuotationView(id);
     } catch {
-      setPdfError("Could not generate PDF. Please try again.");
+      setViewError("Could not open the quotation preview. Please try again.");
     }
   }
 
@@ -269,14 +263,14 @@ export default function QuotationEditorPage() {
         <h1>{isNew ? "New Quotation" : existing?.quote_number || "Quotation"}</h1>
         <div className="header-actions">
           {!isNew && (
-            <button onClick={handleDownloadPdf}>Download PDF</button>
+            <button onClick={handleView}>View</button>
           )}
           <button onClick={handleSave} disabled={saveMutation.isPending}>
             {saveMutation.isPending ? "Saving..." : "Save"}
           </button>
         </div>
       </div>
-      {pdfError && <p className="form-error">{pdfError}</p>}
+      {viewError && <p className="form-error">{viewError}</p>}
       {saveMutation.isError && <p className="form-error">Failed to save quotation.</p>}
 
       <div className="quote-form-grid">
