@@ -84,7 +84,12 @@ export default function ArchivePage() {
                 <td>{new Date(q.created_at).toLocaleDateString()}</td>
                 <td className="row-actions">
                   <Link to={`/quotations/${q.id}`}><button>Open</button></Link>
-                  <button onClick={() => restoreMutation.mutate(q.id)} disabled={restoreMutation.isPending}>
+                  <button
+                    onClick={() => {
+                      if (confirm(`Restore quotation ${q.quote_number}?`)) restoreMutation.mutate(q.id);
+                    }}
+                    disabled={restoreMutation.isPending}
+                  >
                     Restore
                   </button>
                 </td>
