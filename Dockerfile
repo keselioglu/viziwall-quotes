@@ -9,7 +9,10 @@ ENV VITE_API_URL=/api
 RUN npm run build
 
 # --- Backend runtime ---
-FROM python:3.12-slim AS backend
+# Pinned to Debian 12 (bookworm) rather than the floating "slim" tag: it recently moved to
+# trixie, where libgdk-pixbuf2.0-0 was renamed to libgdk-pixbuf-2.0-0 and broke this build.
+# Pinning avoids chasing renamed packages again on the next base-image update.
+FROM python:3.12-slim-bookworm AS backend
 
 # WeasyPrint (backend/app/pdf.py) needs these native libs at runtime — without them the
 # PDF endpoint 500s even though everything else works. See:
