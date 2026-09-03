@@ -112,6 +112,11 @@ export default function QuotationsPage() {
     onError: () => alert("Failed to duplicate quotation."),
   });
 
+  const statusOptions = useMemo(() => {
+    const present = new Set((quotations ?? []).map((q) => q.status));
+    return STATUS_OPTIONS.filter((s) => present.has(s));
+  }, [quotations]);
+
   const customerOptions = useMemo(() => {
     const names = new Set((quotations ?? []).map((q) => q.customer.company_name).filter(Boolean) as string[]);
     return Array.from(names).sort();
@@ -198,7 +203,7 @@ export default function QuotationsPage() {
           </button>
           {statusMenuOpen && (
             <div className="status-filter-menu">
-              {STATUS_OPTIONS.map((s) => (
+              {statusOptions.map((s) => (
                 <label key={s} className="checkbox-label">
                   <input
                     type="checkbox"
