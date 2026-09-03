@@ -77,6 +77,7 @@ export interface Quotation {
   status: QuoteStatus;
   currency: string;
   tax_rate_percent: string;
+  advance_payment_percent: string | null;
   notes: string | null;
   valid_until: string | null;
   service_description: string | null;
@@ -90,6 +91,7 @@ export interface Quotation {
   subtotal: string;
   tax_amount: string;
   total: string;
+  advance_payment_amount: string | null;
 }
 
 export interface QuotationListItem {
@@ -116,6 +118,7 @@ export interface QuotationInput {
   status: QuoteStatus;
   currency: string;
   tax_rate_percent: number;
+  advance_payment_percent: number | null;
   notes: string | null;
   valid_until: string | null;
   service_description: string | null;

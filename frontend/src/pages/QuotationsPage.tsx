@@ -89,6 +89,7 @@ export default function QuotationsPage() {
         status: "draft",
         currency: source.currency,
         tax_rate_percent: Number(source.tax_rate_percent),
+        advance_payment_percent: source.advance_payment_percent ? Number(source.advance_payment_percent) : null,
         notes: source.notes,
         valid_until: null,
         service_description: source.service_description,

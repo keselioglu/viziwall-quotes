@@ -110,6 +110,7 @@ class Quotation(Base):
     status = Column(Enum(QuoteStatus), default=QuoteStatus.draft, nullable=False)
     currency = Column(String, default="EUR", nullable=False)
     tax_rate_percent = Column(Numeric(5, 2), default=0, nullable=False)
+    advance_payment_percent = Column(Numeric(5, 2), nullable=True)
     notes = Column(Text, nullable=True)
     valid_until = Column(Date, nullable=True)
 

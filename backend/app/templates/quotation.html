@@ -111,6 +111,12 @@
             <td>Total</td>
             <td class="num">{{ '%.2f'|format(quotation.total) }} {{ quotation.currency }}</td>
         </tr>
+        {% if quotation.advance_payment_percent %}
+        <tr>
+            <td>Advance Payment ({{ quotation.advance_payment_percent }}%)</td>
+            <td class="num">{{ '%.2f'|format(quotation.advance_payment_amount) }} {{ quotation.currency }}</td>
+        </tr>
+        {% endif %}
     </table>
 </div>
 

@@ -61,6 +61,7 @@ export default function QuotationEditorPage() {
   const [status, setStatus] = useState<QuoteStatus>("draft");
   const [currency, setCurrency] = useState("EUR");
   const [taxRate, setTaxRate] = useState("0");
+  const [advancePayment, setAdvancePayment] = useState(isNew ? "50" : "");
   const [notes, setNotes] = useState("");
   const [validUntil, setValidUntil] = useState("");
   const [items, setItems] = useState<DraftLineItem[]>([newLineItem("led_wall")]);
@@ -84,6 +85,7 @@ export default function QuotationEditorPage() {
     setStatus(existing.status);
     setCurrency(existing.currency);
     setTaxRate(existing.tax_rate_percent);
+    setAdvancePayment(existing.advance_payment_percent ?? "");
     setNotes(existing.notes || "");
     setValidUntil(existing.valid_until || "");
     setItems(
@@ -104,7 +106,7 @@ export default function QuotationEditorPage() {
     setDirty(true);
   }, [
     customerId, eventId, addingEvent, eventName, eventVenue, eventStart, eventEnd,
-    status, currency, taxRate, notes, validUntil, items,
+    status, currency, taxRate, advancePayment, notes, validUntil, items,
   ]);
 
   useEffect(() => {
@@ -188,13 +190,15 @@ export default function QuotationEditorPage() {
       return sum + qty * price;
     }, 0);
     const tax = subtotal * ((parseFloat(taxRate) || 0) / 100);
-    return { subtotal, tax, total: subtotal + tax };
+    const total = subtotal + tax;
+    const advance = advancePayment ? total * (parseFloat(advancePayment) / 100) : null;
+    return { subtotal, tax, total, advance };
   }
 
-  async function handleSave() {
+  async function buildInput(): Promise<QuotationInput | null> {
     if (!customerId) {
       alert("Please select a customer.");
-      return;
+      return null;
     }
 
     if (addingEvent && eventName.trim()) {
@@ -216,7 +220,7 @@ export default function QuotationEditorPage() {
       }
     }
 
-    const input: QuotationInput = {
+    return {
       customer_id: customerId,
       event_name: eventName || null,
       event_venue: eventVenue || null,
@@ -226,6 +230,7 @@ export default function QuotationEditorPage() {
       status,
       currency,
       tax_rate_percent: parseFloat(taxRate) || 0,
+      advance_payment_percent: advancePayment.trim() ? parseFloat(advancePayment) : null,
       notes: notes || null,
       valid_until: validUntil || null,
       service_description: existing?.service_description ?? null,
@@ -242,29 +247,40 @@ export default function QuotationEditorPage() {
           sort_order: idx,
         })),
     };
+  }
+
+  async function handleSave() {
+    const input = await buildInput();
+    if (!input) return;
     saveMutation.mutate(input);
   }
 
   async function handleView() {
-    if (!id || isNew) return;
     setViewError(null);
     try {
-      await openQuotationView(id);
+      if (isNew) {
+        const input = await buildInput();
+        if (!input) return;
+        const saved = await saveMutation.mutateAsync(input);
+        await openQuotationView(saved.id);
+      } else if (id) {
+        await openQuotationView(id);
+      }
     } catch {
       setViewError("Could not open the quotation preview. Please try again.");
     }
   }
 
-  const { subtotal, tax, total } = computeTotals();
+  const { subtotal, tax, total, advance } = computeTotals();
 
   return (
     <div>
       <div className="page-header">
         <h1>{isNew ? "New Quotation" : existing?.quote_number || "Quotation"}</h1>
         <div className="header-actions">
-          {!isNew && (
-            <button onClick={handleView}>View</button>
-          )}
+          <button onClick={handleView} disabled={saveMutation.isPending}>
+            {isNew ? "Save & View" : "View"}
+          </button>
           <button onClick={handleSave} disabled={saveMutation.isPending}>
             {saveMutation.isPending ? "Saving..." : "Save"}
           </button>
@@ -352,6 +368,15 @@ export default function QuotationEditorPage() {
           <input type="number" step="0.01" value={taxRate} onChange={(e) => setTaxRate(e.target.value)} />
         </label>
         <label>
+          Advance Payment (%)
+          <input
+            type="number" step="0.01" min="0" max="100"
+            placeholder="e.g. 30"
+            value={advancePayment}
+            onChange={(e) => setAdvancePayment(e.target.value)}
+          />
+        </label>
+        <label>
           Valid Until
           <input type="date" value={validUntil} onChange={(e) => setValidUntil(e.target.value)} />
         </label>
@@ -437,6 +462,9 @@ export default function QuotationEditorPage() {
         <div><span>Subtotal</span><span>{subtotal.toFixed(2)} {currency}</span></div>
         <div><span>Tax ({taxRate || 0}%)</span><span>{tax.toFixed(2)} {currency}</span></div>
         <div className="total-line"><span>Total</span><span>{total.toFixed(2)} {currency}</span></div>
+        {advance !== null && (
+          <div><span>Advance Payment ({advancePayment}%)</span><span>{advance.toFixed(2)} {currency}</span></div>
+        )}
       </div>
 
       <label className="notes-field">

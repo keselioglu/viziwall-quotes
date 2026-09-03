@@ -146,6 +146,7 @@ class QuotationBase(BaseModel):
     status: QuoteStatus = QuoteStatus.draft
     currency: str = "EUR"
     tax_rate_percent: Decimal = Decimal("0")
+    advance_payment_percent: Optional[Decimal] = None
     notes: Optional[str] = None
     valid_until: Optional[date] = None
     service_description: Optional[str] = None
@@ -169,6 +170,7 @@ class QuotationUpdate(BaseModel):
     status: Optional[QuoteStatus] = None
     currency: Optional[str] = None
     tax_rate_percent: Optional[Decimal] = None
+    advance_payment_percent: Optional[Decimal] = None
     notes: Optional[str] = None
     valid_until: Optional[date] = None
     service_description: Optional[str] = None
@@ -204,6 +206,13 @@ class QuotationOut(QuotationBase):
         if not self.line_items and self.historical_total_amount is not None:
             return self.historical_total_amount
         return self.subtotal + self.tax_amount
+
+    @computed_field
+    @property
+    def advance_payment_amount(self) -> Optional[Decimal]:
+        if self.advance_payment_percent is None:
+            return None
+        return self.total * (self.advance_payment_percent / Decimal("100"))
 
 
 class QuotationListOut(BaseModel):
