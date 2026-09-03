@@ -246,7 +246,7 @@ export default function QuotationEditorPage() {
             <option value="draft">Draft</option>
             <option value="sent">Sent</option>
             <option value="follow_up_sent">Follow up sent</option>
-            <option value="new_version_sent">New version sent</option>
+            <option value="new_version_sent">Active</option>
             <option value="waiting">Waiting</option>
             <option value="approved">Approved</option>
             <option value="declined">Declined</option>

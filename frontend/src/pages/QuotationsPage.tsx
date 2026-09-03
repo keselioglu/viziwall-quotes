@@ -23,7 +23,7 @@ const statusLabels: Record<string, string> = {
   draft: "Draft",
   sent: "Sent",
   follow_up_sent: "Follow up sent",
-  new_version_sent: "New version sent",
+  new_version_sent: "Active",
   waiting: "Waiting",
   approved: "Approved",
   declined: "Declined",

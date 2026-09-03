@@ -21,7 +21,7 @@ const STATUS_LABELS: Record<string, string> = {
   draft: "draft",
   sent: "sent",
   follow_up_sent: "follow-up sent",
-  new_version_sent: "new version sent",
+  new_version_sent: "active",
   waiting: "waiting",
   approved: "approved",
 };
@@ -95,13 +95,13 @@ export default function SchedulePage() {
   );
 
   const summaryCounts = useMemo(() => {
-    let active = 0;
+    let waiting = 0;
     let approved = 0;
     for (const q of quotations ?? []) {
-      if (q.status === "waiting" || q.status === "follow_up_sent") active++;
+      if (q.status === "waiting" || q.status === "follow_up_sent") waiting++;
       else if (q.status === "approved") approved++;
     }
-    return { active, approved };
+    return { waiting, approved };
   }, [quotations]);
 
   const { scheduled, unscheduled } = useMemo(() => {
@@ -144,7 +144,7 @@ export default function SchedulePage() {
       <div className="schedule-summary">
         <div className="schedule-summary-stat">
           <span className="schedule-summary-dot status-waiting" />
-          Active <strong>{summaryCounts.active}</strong>
+          Waiting <strong>{summaryCounts.waiting}</strong>
         </div>
         <div className="schedule-summary-stat">
           <span className="schedule-summary-dot status-accepted" />
