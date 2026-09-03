@@ -17,13 +17,35 @@ const statusColors: Record<string, string> = {
   approved: "status-accepted",
 };
 
-const STATUS_LABELS: Record<string, string> = {
+type DisplayBucket = "active" | "approved" | "draft" | "sent";
+
+const BUCKET_FOR_STATUS: Record<QuoteStatus, DisplayBucket> = {
   draft: "draft",
   sent: "sent",
-  follow_up_sent: "follow-up sent",
+  follow_up_sent: "active",
   new_version_sent: "active",
-  waiting: "waiting",
+  waiting: "active",
   approved: "approved",
+  declined: "draft",
+  cancelled: "draft",
+  expired: "draft",
+  archived: "draft",
+};
+
+const BUCKET_ORDER: DisplayBucket[] = ["active", "approved", "sent", "draft"];
+
+const BUCKET_LABELS: Record<DisplayBucket, string> = {
+  active: "active",
+  approved: "approved",
+  sent: "sent",
+  draft: "draft",
+};
+
+const BUCKET_COLORS: Record<DisplayBucket, string> = {
+  active: "status-waiting",
+  approved: "status-accepted",
+  sent: "status-sent",
+  draft: "status-draft",
 };
 
 const WEEKDAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -37,8 +59,8 @@ interface EventGroup {
   eventName: string;
   eventVenue: string | null;
   quotes: QuotationListItem[];
-  statusCounts: [QuoteStatus, number][];
-  primaryStatus: QuoteStatus;
+  bucketCounts: [DisplayBucket, number][];
+  primaryBucket: DisplayBucket;
 }
 
 function groupByEvent(quotes: QuotationListItem[]): EventGroup[] {
@@ -49,16 +71,21 @@ function groupByEvent(quotes: QuotationListItem[]): EventGroup[] {
     groups.get(key)!.push(q);
   }
   return Array.from(groups.entries()).map(([key, groupQuotes]) => {
-    const counts = new Map<QuoteStatus, number>();
-    for (const q of groupQuotes) counts.set(q.status, (counts.get(q.status) ?? 0) + 1);
-    const statusCounts = Array.from(counts.entries()).sort((a, b) => b[1] - a[1]);
+    const counts = new Map<DisplayBucket, number>();
+    for (const q of groupQuotes) {
+      const bucket = BUCKET_FOR_STATUS[q.status];
+      counts.set(bucket, (counts.get(bucket) ?? 0) + 1);
+    }
+    const bucketCounts = BUCKET_ORDER
+      .filter((bucket) => counts.has(bucket))
+      .map((bucket) => [bucket, counts.get(bucket)!] as [DisplayBucket, number]);
     return {
       key,
       eventName: groupQuotes[0].event_name || groupQuotes[0].quote_number,
       eventVenue: groupQuotes[0].event_venue,
       quotes: groupQuotes,
-      statusCounts,
-      primaryStatus: statusCounts[0][0],
+      bucketCounts,
+      primaryBucket: bucketCounts[0][0],
     };
   });
 }
@@ -175,10 +202,10 @@ export default function SchedulePage() {
                     <span className="schedule-day-number">{day.getDate()}</span>
                     <div className="schedule-day-events">
                       {groupByEvent(events).map((group) => {
-                        const summary = group.statusCounts
-                          .map(([status, count]) => `${STATUS_LABELS[status]}:${count}`)
+                        const summary = group.bucketCounts
+                          .map(([bucket, count]) => `${BUCKET_LABELS[bucket]}:${count}`)
                           .join(" ");
-                        const chipClass = `schedule-chip ${statusColors[group.primaryStatus]}`;
+                        const chipClass = `schedule-chip ${BUCKET_COLORS[group.primaryBucket]}`;
                         const chipContent = (
                           <>
                             <span className="schedule-chip-name">{group.eventName}</span>
