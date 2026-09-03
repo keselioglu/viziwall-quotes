@@ -17,11 +17,51 @@ const statusColors: Record<string, string> = {
   approved: "status-accepted",
 };
 
+const STATUS_LABELS: Record<string, string> = {
+  draft: "draft",
+  sent: "sent",
+  follow_up_sent: "follow-up sent",
+  new_version_sent: "new version sent",
+  waiting: "waiting",
+  approved: "approved",
+};
+
 const WEEKDAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const MONTH_LABELS = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December",
 ];
+
+interface EventGroup {
+  key: string;
+  eventName: string;
+  eventVenue: string | null;
+  quotes: QuotationListItem[];
+  statusCounts: [QuoteStatus, number][];
+  primaryStatus: QuoteStatus;
+}
+
+function groupByEvent(quotes: QuotationListItem[]): EventGroup[] {
+  const groups = new Map<string, QuotationListItem[]>();
+  for (const q of quotes) {
+    const key = `${q.event_name ?? ""}|${q.event_venue ?? ""}`;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key)!.push(q);
+  }
+  return Array.from(groups.entries()).map(([key, groupQuotes]) => {
+    const counts = new Map<QuoteStatus, number>();
+    for (const q of groupQuotes) counts.set(q.status, (counts.get(q.status) ?? 0) + 1);
+    const statusCounts = Array.from(counts.entries()).sort((a, b) => b[1] - a[1]);
+    return {
+      key,
+      eventName: groupQuotes[0].event_name || groupQuotes[0].quote_number,
+      eventVenue: groupQuotes[0].event_venue,
+      quotes: groupQuotes,
+      statusCounts,
+      primaryStatus: statusCounts[0][0],
+    };
+  });
+}
 
 function toDateOnly(iso: string) {
   const [y, m, d] = iso.split("-").map(Number);
@@ -113,17 +153,37 @@ export default function SchedulePage() {
                   >
                     <span className="schedule-day-number">{day.getDate()}</span>
                     <div className="schedule-day-events">
-                      {events.map((q) => (
-                        <Link
-                          key={q.id}
-                          to={`/quotations/${q.id}`}
-                          className={`schedule-chip ${statusColors[q.status]}`}
-                          title={`${q.event_name || q.quote_number} — ${q.event_venue || ""}`}
-                        >
-                          <span className="schedule-chip-name">{q.event_name || q.quote_number}</span>
-                          {q.event_venue && <span className="schedule-chip-venue">{q.event_venue}</span>}
-                        </Link>
-                      ))}
+                      {groupByEvent(events).map((group) => {
+                        const summary = group.statusCounts
+                          .map(([status, count]) => `${STATUS_LABELS[status]}:${count}`)
+                          .join(" ");
+                        const chipClass = `schedule-chip ${statusColors[group.primaryStatus]}`;
+                        const chipContent = (
+                          <>
+                            <span className="schedule-chip-name">{group.eventName}</span>
+                            {group.eventVenue && <span className="schedule-chip-venue">{group.eventVenue}</span>}
+                            {group.quotes.length > 1 && <span className="schedule-chip-summary">{summary}</span>}
+                          </>
+                        );
+                        return group.quotes.length === 1 ? (
+                          <Link
+                            key={group.key}
+                            to={`/quotations/${group.quotes[0].id}`}
+                            className={chipClass}
+                            title={`${group.eventName} — ${group.eventVenue || ""}`}
+                          >
+                            {chipContent}
+                          </Link>
+                        ) : (
+                          <div
+                            key={group.key}
+                            className={chipClass}
+                            title={`${group.eventName} — ${group.eventVenue || ""} — ${summary}`}
+                          >
+                            {chipContent}
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 );

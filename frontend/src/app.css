@@ -376,6 +376,14 @@ button.danger:hover {
   text-overflow: ellipsis;
 }
 
+.schedule-chip-summary {
+  font-weight: 600;
+  opacity: 0.9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* --- Modal --- */
 
 .modal-backdrop {
