@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createEvent, createQuotation, getCustomers, getEvents, getProducts, getQuotation, updateQuotation,
 } from "../api/endpoints";
 import { api } from "../api/client";
+import { setNavGuard } from "../navGuard";
 import type { Product, ProductType, QuoteLineItemInput, QuoteStatus, QuotationInput } from "../types";
 
 const ADD_NEW_EVENT = "__add_new_event__";
@@ -64,9 +65,12 @@ export default function QuotationEditorPage() {
   const [validUntil, setValidUntil] = useState("");
   const [items, setItems] = useState<DraftLineItem[]>([newLineItem("led_wall")]);
   const [pdfError, setPdfError] = useState<string | null>(null);
+  const [dirty, setDirty] = useState(false);
+  const loadedRef = useRef(isNew);
 
   useEffect(() => {
     if (!existing) return;
+    loadedRef.current = false;
     setCustomerId(existing.customer_id);
     const matched = events?.find(
       (ev) => ev.name === existing.event_name && ev.venue === existing.event_venue
@@ -91,12 +95,41 @@ export default function QuotationEditorPage() {
           }))
         : [newLineItem("led_wall")]
     );
+    setDirty(false);
+    loadedRef.current = true;
   }, [existing, events, products]);
+
+  useEffect(() => {
+    if (!loadedRef.current) return;
+    setDirty(true);
+  }, [
+    customerId, eventId, addingEvent, eventName, eventVenue, eventStart, eventEnd,
+    status, currency, taxRate, notes, validUntil, items,
+  ]);
+
+  useEffect(() => {
+    if (!dirty) {
+      setNavGuard(null);
+      return;
+    }
+    setNavGuard(() => confirm("You have unsaved changes. Leave without saving?"));
+    return () => setNavGuard(null);
+  }, [dirty]);
+
+  useEffect(() => {
+    function handleBeforeUnload(e: BeforeUnloadEvent) {
+      if (!dirty) return;
+      e.preventDefault();
+    }
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [dirty]);
 
   const saveMutation = useMutation({
     mutationFn: (input: QuotationInput) =>
       isNew ? createQuotation(input) : updateQuotation(id!, input),
     onSuccess: (saved) => {
+      setDirty(false);
       queryClient.invalidateQueries({ queryKey: ["quotations"] });
       queryClient.invalidateQueries({ queryKey: ["quotation", saved.id] });
       navigate(`/quotations/${saved.id}`);
