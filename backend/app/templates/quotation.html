@@ -59,6 +59,7 @@
     .supplier .advance-line { margin-top: 12px; font-weight: 700; color: #8b0000; }
     .spec-section { margin-top: 20px; }
     .spec-section h2 { font-size: 15pt; color: #0e3055; margin: 0 0 10px; }
+    .spec-section-19mm { page-break-before: always; }
     .spec-table { font-size: 9pt; }
     .spec-table td { padding: 2px 10px; line-height: 1.1; border: 1px solid #ccc; }
     .spec-table tr:nth-child(even) { background: #f2f2f2; }
@@ -383,7 +384,7 @@
 {% endif %}
 
 {% if has_19mm_product %}
-<div class="spec-section">
+<div class="spec-section spec-section-19mm">
     <h2>Technical Specifications of P1.9 Indoor Wall Mounted LED Panels</h2>
     <table class="spec-table">
         <tr><td class="spec-label">Pixel Pitch (mm)</td><td>P1.95</td></tr>
