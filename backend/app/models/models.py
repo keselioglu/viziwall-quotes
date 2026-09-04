@@ -1,6 +1,7 @@
 import enum
 import uuid
 from datetime import date, datetime
+from decimal import Decimal
 
 from sqlalchemy import (
     Boolean, Column, Date, DateTime, Enum, ForeignKey, Integer, Numeric, String, Text,
@@ -135,6 +136,53 @@ class Quotation(Base):
     created_by = relationship("User")
     line_items = relationship("QuoteLineItem", back_populates="quotation", cascade="all, delete-orphan", order_by="QuoteLineItem.sort_order")
 
+    @property
+    def subtotal(self):
+        return sum((li.line_total for li in self.line_items), Decimal("0"))
+
+    @property
+    def tax_amount(self):
+        discounted = self.subtotal - (self.discount_amount or Decimal("0"))
+        return discounted * (self.tax_rate_percent / Decimal("100"))
+
+    @property
+    def total(self):
+        if not self.line_items and self.historical_total_amount is not None:
+            return self.historical_total_amount
+        discounted = self.subtotal - (self.discount_amount or Decimal("0"))
+        return discounted + self.tax_amount
+
+    @property
+    def validity_days(self):
+        if self.valid_until is None:
+            return None
+        return (self.valid_until - self.created_at.date()).days
+
+    @property
+    def days_to_event(self):
+        if self.valid_until is None or self.event_start_date is None:
+            return None
+        return (self.event_start_date - self.valid_until).days
+
+    @property
+    def event_duration_days(self):
+        if self.event_start_date is None:
+            return None
+        end = self.event_end_date or self.event_start_date
+        return (end - self.event_start_date).days + 1
+
+    @property
+    def rental_period_days(self):
+        if self.event_duration_days is None:
+            return None
+        return self.installation_days + self.event_duration_days
+
+    @property
+    def advance_payment_amount(self):
+        if self.advance_payment_percent is None:
+            return None
+        return self.total * (self.advance_payment_percent / Decimal("100"))
+
 
 class QuoteLineItem(Base):
     __tablename__ = "quote_line_items"
@@ -157,3 +205,7 @@ class QuoteLineItem(Base):
     @property
     def line_total(self):
         return self.quantity * self.unit_price
+
+    @property
+    def product_type(self):
+        return self.product.product_type if self.product else None

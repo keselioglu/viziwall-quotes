@@ -26,6 +26,13 @@ def health():
     return {"status": "ok"}
 
 
+# Assets used by server-rendered templates (quotation.html), as opposed to the
+# built frontend below. Mounted under /doc-assets so it can never collide with
+# the SPA's own /assets mount.
+app_static = Path(__file__).resolve().parent / "static"
+app.mount("/doc-assets", StaticFiles(directory=app_static), name="doc-assets")
+
+
 # Serve the built frontend (frontend/dist, copied into the image at build time — see
 # Dockerfile). Mounted last so it never shadows the /api/* or /health routes above.
 frontend_dist = Path(__file__).resolve().parent.parent / "static"

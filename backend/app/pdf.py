@@ -1,3 +1,4 @@
+import base64
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
@@ -6,6 +7,14 @@ from app.config import settings
 
 TEMPLATES_DIR = Path(__file__).parent / "templates"
 _env = Environment(loader=FileSystemLoader(str(TEMPLATES_DIR)))
+
+# Embedded as a data URI rather than served as a separate static file: the /view
+# endpoint returns raw HTML with no static-file route backing it, and a data URI
+# means the logo renders identically whether viewed in-browser or printed, with
+# no extra network request either way. Read once at import time — the file never
+# changes at runtime.
+_LOGO_SVG_PATH = Path(__file__).parent / "static" / "logo.svg"
+_LOGO_DATA_URI = "data:image/svg+xml;base64," + base64.b64encode(_LOGO_SVG_PATH.read_bytes()).decode("ascii")
 
 # Category short names for the auto-generated service description headline,
 # in display order. "services" is deliberately excluded — it's not rented equipment.
@@ -49,6 +58,7 @@ def render_quotation_html(quotation) -> str:
         has_26mm_product=has_26mm,
         has_19mm_product=has_19mm,
         service_description_headline=_service_description_headline(quotation),
+        logo_data_uri=_LOGO_DATA_URI,
     )
 
 
