@@ -3,9 +3,13 @@
 <head>
 <meta charset="utf-8">
 <style>
-    @page { size: A4; margin: 2cm; margin-bottom: 3cm; }
+    @page { size: A4; margin: 2cm; }
     body { font-family: 'Helvetica Neue', Arial, sans-serif; color: #1a1a1a; font-size: 10.5pt; }
-    .page-footer { position: fixed; bottom: 0.5cm; left: 0; right: 0; text-align: center; border-top: 1px solid #0e3055; padding-top: 6px; font-size: 8pt; }
+    table.page-wrap { width: 100%; border-collapse: collapse; margin-bottom: 0; }
+    table.page-wrap > tbody > tr > td,
+    table.page-wrap > tfoot > tr > td { padding: 0; border: none; }
+    .page-footer-row > td { padding-top: 10px; }
+    .page-footer { text-align: center; border-top: 1px solid #0e3055; padding-top: 6px; font-size: 8pt; }
     .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #0e3055; padding-bottom: 8px; margin-bottom: 10px; }
     .logo { height: 44px; width: auto; }
     .quote-meta { text-align: right; }
@@ -68,17 +72,26 @@
 </head>
 <body>
 
-<div class="page-footer">
-    <img class="logo" src="{{ logo_data_uri }}" alt="{{ company_name }}">
-    <div class="page-footer-brand">{{ company_name }} <span class="legal-name">&middot; Nova Robotics EOOD</span></div>
-    <div class="page-footer-links">
-        <a href="https://viziwall.com">viziwall.com</a>
-        {% if company_phone %}&middot; {{ company_phone }}{% endif %}
-        {% if company_email %}&middot; {{ company_email }}{% endif %}
-        &middot; <a href="https://www.instagram.com/viziwall">Instagram</a>
-        &middot; <a href="https://www.linkedin.com/company/viziwall">LinkedIn</a>
-    </div>
-</div>
+<table class="page-wrap">
+<tfoot>
+    <tr class="page-footer-row">
+        <td>
+            <div class="page-footer">
+                <img class="logo" src="{{ logo_data_uri }}" alt="{{ company_name }}">
+                <div class="page-footer-brand">{{ company_name }} <span class="legal-name">&middot; Nova Robotics EOOD</span></div>
+                <div class="page-footer-links">
+                    <a href="https://viziwall.com">viziwall.com</a>
+                    {% if company_phone %}&middot; {{ company_phone }}{% endif %}
+                    {% if company_email %}&middot; {{ company_email }}{% endif %}
+                    &middot; <a href="https://www.instagram.com/viziwall">Instagram</a>
+                    &middot; <a href="https://www.linkedin.com/company/viziwall">LinkedIn</a>
+                </div>
+            </div>
+        </td>
+    </tr>
+</tfoot>
+<tbody>
+<tr><td>
 
 <div class="header">
     <div>
@@ -385,6 +398,10 @@
     </table>
 </div>
 {% endif %}
+
+</td></tr>
+</tbody>
+</table>
 
 </body>
 </html>
