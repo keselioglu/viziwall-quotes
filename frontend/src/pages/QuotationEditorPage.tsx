@@ -275,9 +275,9 @@ export default function QuotationEditorPage() {
         const input = await buildInput();
         if (!input) return;
         const saved = await saveMutation.mutateAsync(input);
-        await openQuotationView(saved.id);
-      } else if (id) {
-        await openQuotationView(id);
+        openQuotationView(saved.quote_number);
+      } else if (existing) {
+        openQuotationView(existing.quote_number);
       }
     } catch {
       setViewError("Could not open the quotation preview. Please try again.");

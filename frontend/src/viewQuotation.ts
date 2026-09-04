@@ -1,9 +1,7 @@
-import { getQuotationViewHtml } from "./api/endpoints";
+import { TOKEN_KEY } from "./api/client";
 
-export async function openQuotationView(id: string) {
-  const html = await getQuotationViewHtml(id);
-  const blob = new Blob([html], { type: "text/html" });
-  const url = URL.createObjectURL(blob);
+export function openQuotationView(quoteNumber: string) {
+  const token = localStorage.getItem(TOKEN_KEY);
+  const url = `/quote/${quoteNumber.toLowerCase()}${token ? `?token=${encodeURIComponent(token)}` : ""}`;
   window.open(url, "_blank");
-  setTimeout(() => URL.revokeObjectURL(url), 30000);
 }

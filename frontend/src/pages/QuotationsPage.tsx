@@ -288,11 +288,7 @@ export default function QuotationsPage() {
                 <td>{new Date(q.created_at).toLocaleDateString()}</td>
                 <td className="row-actions">
                   <Link to={`/quotations/${q.id}`}><button>Open</button></Link>
-                  <button
-                    onClick={() => {
-                      openQuotationView(q.id).catch(() => alert("Could not open the quotation preview."));
-                    }}
-                  >
+                  <button onClick={() => openQuotationView(q.quote_number)}>
                     View
                   </button>
                   <button

@@ -76,6 +76,3 @@ export const restoreQuotation = (id: string) =>
 
 export const getQuotationPdfUrl = (id: string) =>
   `${import.meta.env.VITE_API_URL}/quotations/${id}/pdf`;
-
-export const getQuotationViewHtml = (id: string) =>
-  api.get<string>(`/quotations/${id}/view`, { responseType: "text" }).then((r) => r.data);

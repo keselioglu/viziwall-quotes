@@ -1,10 +1,17 @@
 from pathlib import Path
 
-from fastapi import FastAPI
-from fastapi.responses import FileResponse
+from fastapi import Depends, FastAPI, HTTPException
+from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy.orm import Session
 
+from app.auth import get_current_user_from_query
+from app.database import get_db
+from app.models import Quotation
+from app.pdf import render_quotation_html
 from app.routers import auth_router, customers, events, products, quotations
+from app.routers.quotations import _with_relations
+from app.schemas.schemas import QuotationOut
 
 app = FastAPI(title="Viziwall Quotes API")
 
@@ -24,6 +31,24 @@ app.include_router(quotations.router, prefix="/api")
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+# Short, stable, shareable URL for a quotation's printable view — e.g.
+# /quote/vzw-2026-9017 — instead of the app's blob: preview tabs (which
+# get a random, single-use URL from the browser, not the server). Must be
+# registered before the SPA catch-all below, which would otherwise claim it.
+# Auth comes from a ?token= query param rather than an Authorization header,
+# since this is opened via a plain browser navigation (window.open), not the
+# SPA's axios client.
+@app.get("/quote/{quote_number}")
+def view_quotation_by_number(quote_number: str, db: Session = Depends(get_db), _user=Depends(get_current_user_from_query)):
+    quotation = _with_relations(db.query(Quotation)).filter(Quotation.quote_number == quote_number.upper()).first()
+    if not quotation:
+        raise HTTPException(status_code=404, detail="Quotation not found")
+
+    quotation_out = QuotationOut.model_validate(quotation)
+    html_content = render_quotation_html(quotation_out)
+    return Response(content=html_content, media_type="text/html")
 
 
 # Serve the built frontend (frontend/dist, copied into the image at build time — see
