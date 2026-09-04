@@ -5,7 +5,6 @@ from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 
-from app.auth import get_current_user_from_query
 from app.database import get_db
 from app.models import Quotation
 from app.pdf import render_quotation_html
@@ -37,11 +36,11 @@ def health():
 # /quote/vzw-2026-9017 — instead of the app's blob: preview tabs (which
 # get a random, single-use URL from the browser, not the server). Must be
 # registered before the SPA catch-all below, which would otherwise claim it.
-# Auth comes from a ?token= query param rather than an Authorization header,
-# since this is opened via a plain browser navigation (window.open), not the
-# SPA's axios client.
+# No app-level auth check here: this route is only reachable at all once
+# Cloudflare Access has already required Google SSO login for the whole
+# admin.viziwall.com domain, so the URL can stay clean with no token param.
 @app.get("/quote/{quote_number}")
-def view_quotation_by_number(quote_number: str, db: Session = Depends(get_db), _user=Depends(get_current_user_from_query)):
+def view_quotation_by_number(quote_number: str, db: Session = Depends(get_db)):
     quotation = _with_relations(db.query(Quotation)).filter(Quotation.quote_number == quote_number.upper()).first()
     if not quotation:
         raise HTTPException(status_code=404, detail="Quotation not found")

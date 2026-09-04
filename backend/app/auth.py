@@ -38,7 +38,7 @@ def authenticate_user(db: Session, email: str, password: str):
     return user
 
 
-def _user_from_token(token: str, db: Session) -> User:
+async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -56,15 +56,3 @@ def _user_from_token(token: str, db: Session) -> User:
     if user is None or not user.is_active:
         raise credentials_exception
     return user
-
-
-async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    return _user_from_token(token, db)
-
-
-async def get_current_user_from_query(token: str, db: Session = Depends(get_db)):
-    # Same JWT check as get_current_user, but reads the token from a query
-    # param instead of an Authorization header — for the one route that must
-    # be openable as a plain browser navigation (window.open), which can't
-    # attach a header the way the SPA's axios client does.
-    return _user_from_token(token, db)
