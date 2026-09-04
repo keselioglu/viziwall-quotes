@@ -8,7 +8,7 @@
     table.page-wrap { width: 100%; border-collapse: collapse; margin-bottom: 0; }
     table.page-wrap > tbody > tr > td,
     table.page-wrap > tfoot > tr > td { padding: 0; border: none; }
-    .page-footer-row > td { padding-top: 10px; }
+    .page-footer-row > td { padding-top: 18px; }
     .page-footer { text-align: center; border-top: 1px solid #0e3055; padding-top: 6px; font-size: 8pt; }
     .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #0e3055; padding-bottom: 8px; margin-bottom: 10px; }
     .logo { height: 44px; width: auto; }
@@ -257,7 +257,7 @@
 
 <div class="thank-you">We appreciate the opportunity to work with you.</div>
 
-<div class="terms">
+<div class="terms" data-page-break>
     <h2>Viziwall &ndash; LED Screen General Rental Terms &amp; Conditions</h2>
 
     <h3>1. Scope of Services</h3>
@@ -402,6 +402,107 @@
 </td></tr>
 </tbody>
 </table>
+
+<script>
+(function () {
+    // Pins the repeating footer to the exact bottom of every printed page.
+    // table-footer-group only guarantees the footer repeats on each page — it
+    // renders right after wherever content happens to end on that page, not at
+    // the physical page bottom. This measures the real per-page content height
+    // (A4 minus @page margins, converted to CSS px) and pads out the content
+    // so each page boundary lands exactly on a page-height multiple, pushing
+    // every footer instance to the same position. Runs once on load, well
+    // before any print action — this is a DOM measurement, not a print hook.
+    function mmToPx(mm) {
+        var probe = document.createElement('div');
+        probe.style.width = mm + 'mm';
+        probe.style.position = 'absolute';
+        probe.style.visibility = 'hidden';
+        document.body.appendChild(probe);
+        var px = probe.getBoundingClientRect().width;
+        document.body.removeChild(probe);
+        return px;
+    }
+
+    function pad() {
+        var pageHeightPx = mmToPx(297 - 20 - 20);
+        if (!pageHeightPx || pageHeightPx < 100) return;
+
+        var container = document.querySelector('.page-wrap > tbody > tr > td');
+        if (!container) return;
+
+        // Two things to fix per pass: (1) push any block that straddles a
+        // page boundary onto the next page, so a page never ends mid-element;
+        // (2) once a page's last block is known (the one right before a
+        // forced break, or the very last block of the whole document), fill
+        // its leftover gap with a trailing spacer so the page reaches exactly
+        // pageHeightPx and the footer lands in the same relative position
+        // every time — except the document's true last page, which has no
+        // next page to align to and is left as-is. Re-scans from scratch
+        // after each insertion since it shifts every later block's offset.
+        for (var pass = 0; pass < 40; pass++) {
+            var docTop = container.getBoundingClientRect().top;
+            var blocks = Array.prototype.slice.call(container.children).filter(function (el) {
+                return el.tagName !== 'SCRIPT';
+            });
+
+            var pageStart = 0;
+            var inserted = false;
+
+            for (var i = 0; i < blocks.length; i++) {
+                var block = blocks[i];
+                var isForced = block.hasAttribute('data-page-break');
+                var top = block.getBoundingClientRect().top - docTop;
+                var bottom = block.getBoundingClientRect().bottom - docTop;
+                var pageEnd = pageStart + pageHeightPx;
+                var isLastBlock = i === blocks.length - 1;
+                var nextIsForced = !isLastBlock && blocks[i + 1].hasAttribute('data-page-break');
+
+                if (isForced) {
+                    pageStart = top;
+                    continue;
+                }
+
+                if (top < pageEnd && bottom > pageEnd) {
+                    // Straddles the boundary — push it whole onto the next page.
+                    var gap = pageEnd - top;
+                    var spacer = document.createElement('div');
+                    spacer.style.height = gap + 'px';
+                    block.parentNode.insertBefore(spacer, block);
+                    inserted = true;
+                    break;
+                }
+
+                if (nextIsForced && bottom <= pageEnd) {
+                    // Last block before a forced break — top off the
+                    // remaining gap so the break (and its preceding footer)
+                    // lands flush at the page boundary.
+                    var trailingGap = pageEnd - bottom;
+                    if (trailingGap > 2) {
+                        var trailer = document.createElement('div');
+                        trailer.style.height = trailingGap + 'px';
+                        block.parentNode.insertBefore(trailer, block.nextSibling);
+                        inserted = true;
+                        break;
+                    }
+                }
+
+                if (top >= pageEnd) {
+                    pageStart += pageHeightPx * Math.floor((top - pageStart) / pageHeightPx);
+                }
+            }
+
+            if (!inserted) break;
+        }
+    }
+
+    if (document.readyState === 'complete') {
+        pad();
+    } else {
+        window.addEventListener('load', pad);
+    }
+})();
+</script>
 
 </body>
 </html>
