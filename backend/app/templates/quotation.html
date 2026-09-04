@@ -3,17 +3,9 @@
 <head>
 <meta charset="utf-8">
 <style>
-    @page {
-        size: A4;
-        margin: 2cm;
-        margin-bottom: 2.6cm;
-        @bottom-center {
-            content: element(pageFooter);
-        }
-    }
-    .page-footer { position: running(pageFooter); text-align: center; border-top: 1px solid #0e3055; padding-top: 6px; font-size: 8pt; }
-    .page-footer .page-number::after { content: "Page " counter(page) " of " counter(pages); display: block; margin-top: 2px; color: #888; font-size: 7.5pt; }
+    @page { size: A4; margin: 2cm; margin-bottom: 2.6cm; }
     body { font-family: 'Helvetica Neue', Arial, sans-serif; color: #1a1a1a; font-size: 10.5pt; }
+    .page-footer { position: fixed; bottom: -1.9cm; left: 0; right: 0; text-align: center; border-top: 1px solid #0e3055; padding-top: 6px; font-size: 8pt; }
     .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #0e3055; padding-bottom: 8px; margin-bottom: 10px; }
     .logo { height: 44px; width: auto; }
     .quote-meta { text-align: right; }
@@ -73,7 +65,6 @@
     .service-description p { margin: 0 0 3px; }
     .service-description .rental-note { font-size: 9pt; color: #555; }
 </style>
-<script src="/doc-assets/paged.polyfill.js"></script>
 </head>
 <body>
 
@@ -87,7 +78,6 @@
         &middot; <a href="https://www.instagram.com/viziwall">Instagram</a>
         &middot; <a href="https://www.linkedin.com/company/viziwall">LinkedIn</a>
     </div>
-    <div class="page-number"></div>
 </div>
 
 <div class="header">
