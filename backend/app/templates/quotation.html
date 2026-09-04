@@ -5,11 +5,6 @@
 <style>
     @page { size: A4; margin: 2cm; }
     body { font-family: 'Helvetica Neue', Arial, sans-serif; color: #1a1a1a; font-size: 10.5pt; }
-    table.page-wrap { width: 100%; border-collapse: collapse; margin-bottom: 0; }
-    table.page-wrap > tbody > tr > td,
-    table.page-wrap > tfoot > tr > td { padding: 0; border: none; }
-    .page-footer-row > td { padding-top: 18px; }
-    .page-footer { text-align: center; border-top: 1px solid #0e3055; padding-top: 6px; font-size: 8pt; }
     .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #0e3055; padding-bottom: 8px; margin-bottom: 10px; }
     .logo { height: 44px; width: auto; }
     .quote-meta { text-align: right; }
@@ -38,12 +33,15 @@
     .signature-line { width: 260px; }
     .signature-line .field { border-bottom: 1px solid #999; color: #bbb; padding-bottom: 4px; margin-bottom: 16px; font-size: 9.5pt; }
     .contact-block { margin-top: 16px; font-size: 9.5pt; line-height: 1.5; }
-    .thank-you { text-align: center; font-weight: 700; font-size: 12pt; color: #0e3055; margin-top: 20px; }
-    .page-footer .logo { height: 14px; margin-bottom: 3px; }
-    .page-footer-brand { font-weight: 700; color: #0e3055; }
-    .page-footer-brand .legal-name { font-weight: 400; color: #666; }
-    .page-footer-links { margin-top: 2px; color: #555; }
-    .page-footer-links a { color: #0e3055; text-decoration: none; }
+    .thank-you { text-align: center; font-weight: 700; font-size: 14pt; color: #0e3055; margin-top: 28px; margin-bottom: 24px; }
+    .credentials { text-align: center; }
+    .credentials .logo { height: 48px; width: auto; margin-bottom: 10px; }
+    .credentials-brand { font-weight: 700; font-size: 11pt; color: #0e3055; margin-bottom: 12px; }
+    .credentials-brand .legal-name { font-weight: 400; color: #666; }
+    .credentials-row { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 20px; font-size: 10pt; color: #333; }
+    .credentials-row a { color: #0e3055; text-decoration: none; }
+    .credentials-item { display: inline-flex; align-items: center; gap: 6px; }
+    .credentials-item svg { width: 16px; height: 16px; flex-shrink: 0; }
     .terms { page-break-before: always; font-size: 9pt; color: #333; line-height: 1.5; }
     .terms h2 { font-size: 13pt; color: #0e3055; margin: 0 0 4px; }
     .terms .terms-subtitle { font-size: 9.5pt; color: #666; margin-bottom: 16px; }
@@ -71,27 +69,6 @@
 </style>
 </head>
 <body>
-
-<table class="page-wrap">
-<tfoot>
-    <tr class="page-footer-row">
-        <td>
-            <div class="page-footer">
-                <img class="logo" src="{{ logo_data_uri }}" alt="{{ company_name }}">
-                <div class="page-footer-brand">{{ company_name }} <span class="legal-name">&middot; Nova Robotics EOOD</span></div>
-                <div class="page-footer-links">
-                    <a href="https://viziwall.com">viziwall.com</a>
-                    {% if company_phone %}&middot; {{ company_phone }}{% endif %}
-                    {% if company_email %}&middot; {{ company_email }}{% endif %}
-                    &middot; <a href="https://www.instagram.com/viziwall">Instagram</a>
-                    &middot; <a href="https://www.linkedin.com/company/viziwall">LinkedIn</a>
-                </div>
-            </div>
-        </td>
-    </tr>
-</tfoot>
-<tbody>
-<tr><td>
 
 <div class="header">
     <div>
@@ -257,7 +234,35 @@
 
 <div class="thank-you">We appreciate the opportunity to work with you.</div>
 
-<div class="terms" data-page-break>
+<div class="credentials">
+    <img class="logo" src="{{ logo_data_uri }}" alt="{{ company_name }}">
+    <div class="credentials-brand">{{ company_name }} <span class="legal-name">&middot; Nova Robotics EOOD</span></div>
+    <div class="credentials-row">
+        <span class="credentials-item"><a href="https://viziwall.com">viziwall.com</a></span>
+        {% if company_phone %}
+        <span class="credentials-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            {{ company_phone }}
+        </span>
+        {% endif %}
+        {% if company_email %}
+        <span class="credentials-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
+            {{ company_email }}
+        </span>
+        {% endif %}
+        <span class="credentials-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><path d="M17.5 6.5h.01"/></svg>
+            <a href="https://www.instagram.com/viziwall">Instagram</a>
+        </span>
+        <span class="credentials-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            <a href="https://www.linkedin.com/company/viziwall">LinkedIn</a>
+        </span>
+    </div>
+</div>
+
+<div class="terms">
     <h2>Viziwall &ndash; LED Screen General Rental Terms &amp; Conditions</h2>
 
     <h3>1. Scope of Services</h3>
@@ -398,111 +403,6 @@
     </table>
 </div>
 {% endif %}
-
-</td></tr>
-</tbody>
-</table>
-
-<script>
-(function () {
-    // Pins the repeating footer to the exact bottom of every printed page.
-    // table-footer-group only guarantees the footer repeats on each page — it
-    // renders right after wherever content happens to end on that page, not at
-    // the physical page bottom. This measures the real per-page content height
-    // (A4 minus @page margins, converted to CSS px) and pads out the content
-    // so each page boundary lands exactly on a page-height multiple, pushing
-    // every footer instance to the same position. Runs once on load, well
-    // before any print action — this is a DOM measurement, not a print hook.
-    function mmToPx(mm) {
-        var probe = document.createElement('div');
-        probe.style.width = mm + 'mm';
-        probe.style.position = 'absolute';
-        probe.style.visibility = 'hidden';
-        document.body.appendChild(probe);
-        var px = probe.getBoundingClientRect().width;
-        document.body.removeChild(probe);
-        return px;
-    }
-
-    function pad() {
-        var pageHeightPx = mmToPx(297 - 20 - 20);
-        if (!pageHeightPx || pageHeightPx < 100) return;
-
-        var container = document.querySelector('.page-wrap > tbody > tr > td');
-        if (!container) return;
-
-        // Two things to fix per pass: (1) push any block that straddles a
-        // page boundary onto the next page, so a page never ends mid-element;
-        // (2) once a page's last block is known (the one right before a
-        // forced break, or the very last block of the whole document), fill
-        // its leftover gap with a trailing spacer so the page reaches exactly
-        // pageHeightPx and the footer lands in the same relative position
-        // every time — except the document's true last page, which has no
-        // next page to align to and is left as-is. Re-scans from scratch
-        // after each insertion since it shifts every later block's offset.
-        for (var pass = 0; pass < 40; pass++) {
-            var docTop = container.getBoundingClientRect().top;
-            var blocks = Array.prototype.slice.call(container.children).filter(function (el) {
-                return el.tagName !== 'SCRIPT';
-            });
-
-            var pageStart = 0;
-            var inserted = false;
-
-            for (var i = 0; i < blocks.length; i++) {
-                var block = blocks[i];
-                var isForced = block.hasAttribute('data-page-break');
-                var top = block.getBoundingClientRect().top - docTop;
-                var bottom = block.getBoundingClientRect().bottom - docTop;
-                var pageEnd = pageStart + pageHeightPx;
-                var isLastBlock = i === blocks.length - 1;
-                var nextIsForced = !isLastBlock && blocks[i + 1].hasAttribute('data-page-break');
-
-                if (isForced) {
-                    pageStart = top;
-                    continue;
-                }
-
-                if (top < pageEnd && bottom > pageEnd) {
-                    // Straddles the boundary — push it whole onto the next page.
-                    var gap = pageEnd - top;
-                    var spacer = document.createElement('div');
-                    spacer.style.height = gap + 'px';
-                    block.parentNode.insertBefore(spacer, block);
-                    inserted = true;
-                    break;
-                }
-
-                if (nextIsForced && bottom <= pageEnd) {
-                    // Last block before a forced break — top off the
-                    // remaining gap so the break (and its preceding footer)
-                    // lands flush at the page boundary.
-                    var trailingGap = pageEnd - bottom;
-                    if (trailingGap > 2) {
-                        var trailer = document.createElement('div');
-                        trailer.style.height = trailingGap + 'px';
-                        block.parentNode.insertBefore(trailer, block.nextSibling);
-                        inserted = true;
-                        break;
-                    }
-                }
-
-                if (top >= pageEnd) {
-                    pageStart += pageHeightPx * Math.floor((top - pageStart) / pageHeightPx);
-                }
-            }
-
-            if (!inserted) break;
-        }
-    }
-
-    if (document.readyState === 'complete') {
-        pad();
-    } else {
-        window.addEventListener('load', pad);
-    }
-})();
-</script>
 
 </body>
 </html>
